@@ -1,0 +1,60 @@
+{
+  "count": 3,
+  "results": [
+    {
+      "id": 101,
+      "brand": "Trend",
+      "part_number": "IQ233",
+      "condition": "New old stock",
+      "description": "Trend IQ2 series controller, boxed surplus stock",
+      "quantity": 3,
+      "location": "Birmingham, UK",
+      "last_confirmed_at": "2026-09-14T08:30:00",
+      "age_days": 0,
+      "freshness_state": "fresh",
+      "freshness_label": "Fresh",
+      "match_reason": "Exact part-number match",
+      "supplier_id": 8,
+      "supplier_name": "Legacy Controls UK",
+      "promoted": true,
+      "supplier_trust": {"rfq_response_rate": 96, "avg_response_hours": 2.4},
+      "catalog_part": {"id": 41, "manufacturer": "Trend", "part_number": "IQ233", "verified": true, "relation_count": 2}
+    },
+    {
+      "id": 102,
+      "brand": "Trend",
+      "part_number": "IQ233/230",
+      "condition": "Refurbished",
+      "description": "Tested IQ233 controller with 12-month supplier warranty",
+      "quantity": 1,
+      "location": "Manchester, UK",
+      "last_confirmed_at": "2026-09-12T14:00:00",
+      "age_days": 2,
+      "freshness_state": "fresh",
+      "freshness_label": "Fresh",
+      "match_reason": "Part-number variant",
+      "supplier_id": 11,
+      "supplier_name": "Northern BMS Spares",
+      "promoted": false,
+      "supplier_trust": {"rfq_response_rate": 91, "avg_response_hours": 4.1}
+    },
+    {
+      "id": 103,
+      "brand": "Trend",
+      "part_number": "IQ233 UNB 230VAC",
+      "condition": "Used / tested",
+      "description": "Removed from working site and bench tested",
+      "quantity": 5,
+      "location": "London, UK",
+      "last_confirmed_at": "2026-09-08T10:00:00",
+      "age_days": 6,
+      "freshness_state": "fresh",
+      "freshness_label": "Fresh",
+      "match_reason": "Strong normalized match",
+      "supplier_id": 16,
+      "supplier_name": "Controls Recovery Ltd",
+      "promoted": false,
+      "supplier_trust": {"rfq_response_rate": 88, "avg_response_hours": 5.7}
+    }
+  ]
+}
