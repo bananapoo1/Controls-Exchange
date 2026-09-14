@@ -1,0 +1,161 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: controlsexchange
+      POSTGRES_USER: controlsexchange
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U controlsexchange -d controlsexchange"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    restart: unless-stopped
+    expose: ["8000"]
+    environment:
+      ENVIRONMENT: production
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY}
+      INTEGRATION_ENCRYPTION_KEY: ${INTEGRATION_ENCRYPTION_KEY:?Set INTEGRATION_ENCRYPTION_KEY}
+      PUBLIC_BASE_URL: https://${DOMAIN:?Set DOMAIN}
+      ALLOWED_HOSTS: ${DOMAIN}
+      COOKIE_SECURE: "true"
+      DATABASE_URL: postgresql://controlsexchange:${POSTGRES_PASSWORD}@db:5432/controlsexchange
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:?Set EMAIL_PROVIDER to resend or smtp}
+      EMAIL_FROM: ${EMAIL_FROM:?Set EMAIL_FROM}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_TLS: ${SMTP_TLS:-true}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0.1}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      PHOTO_ID_MODEL: ${PHOTO_ID_MODEL:-gpt-5.6-luna}
+      PHOTO_ID_MAX_BYTES: ${PHOTO_ID_MAX_BYTES:-8388608}
+      AI_SOURCING_ENABLED: ${AI_SOURCING_ENABLED:-true}
+      AI_SOURCING_MODEL: ${AI_SOURCING_MODEL:-gpt-5.6-luna}
+      FOUNDING_TRIAL_ENABLED: ${FOUNDING_TRIAL_ENABLED:-true}
+      FOUNDING_TRIAL_DAYS: ${FOUNDING_TRIAL_DAYS:-90}
+      STANDARD_TRIAL_DAYS: ${STANDARD_TRIAL_DAYS:-30}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STRIPE_PORTAL_RETURN_URL: https://${DOMAIN:?Set DOMAIN}/billing
+      STRIPE_TRIAL_END_BEHAVIOR: ${STRIPE_TRIAL_END_BEHAVIOR:-pause}
+      STRIPE_PRICE_SUPPLIER_STARTER_MONTHLY: ${STRIPE_PRICE_SUPPLIER_STARTER_MONTHLY:-}
+      STRIPE_PRICE_SUPPLIER_STARTER_ANNUAL: ${STRIPE_PRICE_SUPPLIER_STARTER_ANNUAL:-}
+      STRIPE_PRICE_SUPPLIER_PRO_MONTHLY: ${STRIPE_PRICE_SUPPLIER_PRO_MONTHLY:-}
+      STRIPE_PRICE_SUPPLIER_PRO_ANNUAL: ${STRIPE_PRICE_SUPPLIER_PRO_ANNUAL:-}
+      STRIPE_PRICE_SUPPLIER_PREMIUM_MONTHLY: ${STRIPE_PRICE_SUPPLIER_PREMIUM_MONTHLY:-}
+      STRIPE_PRICE_SUPPLIER_PREMIUM_ANNUAL: ${STRIPE_PRICE_SUPPLIER_PREMIUM_ANNUAL:-}
+      STRIPE_PRICE_MANUFACTURER_MONTHLY: ${STRIPE_PRICE_MANUFACTURER_MONTHLY:-}
+      STRIPE_PRICE_MANUFACTURER_ANNUAL: ${STRIPE_PRICE_MANUFACTURER_ANNUAL:-}
+      INVENTORY_IMPORT_EMAIL_DOMAIN: ${INVENTORY_IMPORT_EMAIL_DOMAIN:-}
+      INTELLIGENCE_MIN_DEMAND_EVENTS: ${INTELLIGENCE_MIN_DEMAND_EVENTS:-5}
+      INTELLIGENCE_MIN_BUYER_COMPANIES: ${INTELLIGENCE_MIN_BUYER_COMPANIES:-3}
+      INTELLIGENCE_MIN_QUOTE_SAMPLES: ${INTELLIGENCE_MIN_QUOTE_SAMPLES:-5}
+      INTELLIGENCE_MIN_QUOTE_SUPPLIERS: ${INTELLIGENCE_MIN_QUOTE_SUPPLIERS:-3}
+      INTELLIGENCE_MIN_QUOTE_BUYER_COMPANIES: ${INTELLIGENCE_MIN_QUOTE_BUYER_COMPANIES:-3}
+      INTELLIGENCE_MAX_CONTRIBUTOR_SHARE: ${INTELLIGENCE_MAX_CONTRIBUTOR_SHARE:-0.5}
+      SEARCH_DEMAND_DEDUP_MINUTES: ${SEARCH_DEMAND_DEDUP_MINUTES:-30}
+      API_DEFAULT_RATE_PER_HOUR: ${API_DEFAULT_RATE_PER_HOUR:-1000}
+      API_MAX_RATE_PER_HOUR: ${API_MAX_RATE_PER_HOUR:-10000}
+      ORDER_DOCUMENT_DIR: ${ORDER_DOCUMENT_DIR:-/app/data/order_documents}
+      ORDER_DOCUMENT_MAX_BYTES: ${ORDER_DOCUMENT_MAX_BYTES:-10485760}
+      WEBHOOK_MAX_ATTEMPTS: ${WEBHOOK_MAX_ATTEMPTS:-8}
+      WEBHOOK_TIMEOUT_SECONDS: ${WEBHOOK_TIMEOUT_SECONDS:-15}
+      ALLOW_PRIVATE_WEBHOOK_HOSTS: ${ALLOW_PRIVATE_WEBHOOK_HOSTS:-false}
+      SEED_DEMO_DATA: "false"
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-2}
+    volumes: ["app_data:/app/data"]
+    depends_on:
+      db: {condition: service_healthy}
+
+  feed_worker:
+    build: .
+    restart: unless-stopped
+    command: ["python", "scripts/feed_worker.py", "--loop"]
+    environment:
+      ENVIRONMENT: production
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY}
+      INTEGRATION_ENCRYPTION_KEY: ${INTEGRATION_ENCRYPTION_KEY:?Set INTEGRATION_ENCRYPTION_KEY}
+      PUBLIC_BASE_URL: https://${DOMAIN:?Set DOMAIN}
+      FOUNDING_TRIAL_ENABLED: ${FOUNDING_TRIAL_ENABLED:-true}
+      FOUNDING_TRIAL_DAYS: ${FOUNDING_TRIAL_DAYS:-90}
+      STANDARD_TRIAL_DAYS: ${STANDARD_TRIAL_DAYS:-30}
+      DATABASE_URL: postgresql://controlsexchange:${POSTGRES_PASSWORD}@db:5432/controlsexchange
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:?Set EMAIL_PROVIDER to resend or smtp}
+      EMAIL_FROM: ${EMAIL_FROM:?Set EMAIL_FROM}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_TLS: ${SMTP_TLS:-true}
+      FEED_WORKER_INTERVAL_SECONDS: ${FEED_WORKER_INTERVAL_SECONDS:-60}
+      INVENTORY_IMPORT_EMAIL_DOMAIN: ${INVENTORY_IMPORT_EMAIL_DOMAIN:-}
+      INVENTORY_IMPORT_IMAP_HOST: ${INVENTORY_IMPORT_IMAP_HOST:-}
+      INVENTORY_IMPORT_IMAP_PORT: ${INVENTORY_IMPORT_IMAP_PORT:-993}
+      INVENTORY_IMPORT_IMAP_USER: ${INVENTORY_IMPORT_IMAP_USER:-}
+      INVENTORY_IMPORT_IMAP_PASSWORD: ${INVENTORY_IMPORT_IMAP_PASSWORD:-}
+      INVENTORY_IMPORT_IMAP_SSL: ${INVENTORY_IMPORT_IMAP_SSL:-true}
+      INVENTORY_IMPORT_IMAP_FOLDER: ${INVENTORY_IMPORT_IMAP_FOLDER:-INBOX}
+      SEED_DEMO_DATA: "false"
+    depends_on:
+      db: {condition: service_healthy}
+
+  webhook_worker:
+    build: .
+    restart: unless-stopped
+    command: ["python", "scripts/webhook_worker.py", "--loop"]
+    environment:
+      ENVIRONMENT: production
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY}
+      INTEGRATION_ENCRYPTION_KEY: ${INTEGRATION_ENCRYPTION_KEY:?Set INTEGRATION_ENCRYPTION_KEY}
+      PUBLIC_BASE_URL: https://${DOMAIN:?Set DOMAIN}
+      DATABASE_URL: postgresql://controlsexchange:${POSTGRES_PASSWORD}@db:5432/controlsexchange
+      WEBHOOK_WORKER_INTERVAL_SECONDS: ${WEBHOOK_WORKER_INTERVAL_SECONDS:-20}
+      WEBHOOK_MAX_ATTEMPTS: ${WEBHOOK_MAX_ATTEMPTS:-8}
+      WEBHOOK_TIMEOUT_SECONDS: ${WEBHOOK_TIMEOUT_SECONDS:-15}
+      ALLOW_PRIVATE_WEBHOOK_HOSTS: ${ALLOW_PRIVATE_WEBHOOK_HOSTS:-false}
+      SEED_DEMO_DATA: "false"
+    depends_on:
+      db: {condition: service_healthy}
+
+  backup:
+    build: .
+    restart: unless-stopped
+    command: ["python", "scripts/backup.py", "--loop"]
+    environment:
+      DATABASE_URL: postgresql://controlsexchange:${POSTGRES_PASSWORD}@db:5432/controlsexchange
+      BACKUP_DIR: /app/backups
+      BACKUP_INTERVAL_SECONDS: ${BACKUP_INTERVAL_SECONDS:-21600}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-14}
+      ORDER_DOCUMENT_DIR: /app/data/order_documents
+    volumes: ["backups:/app/backups", "app_data:/app/data:ro"]
+    depends_on:
+      db: {condition: service_healthy}
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN}
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [app]
+
+volumes:
+  postgres_data:
+  app_data:
+  backups:
+  caddy_data:
+  caddy_config:

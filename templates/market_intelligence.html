@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Market intelligence — Controls Exchange{% endblock %}
+{% block content %}
+<main class="dashboard-page intelligence-page">
+  <div class="container dashboard-head">
+    <div><span class="kicker">PHASE 6 · MARKET INTELLIGENCE</span><h1>See demand before you buy stock</h1><p>Aggregated search, RFQ, wanted-part and quote signals from the Controls Exchange network. Individual buyer identities and competitor quotes are never exposed.</p></div>
+    <div class="dashboard-actions"><a class="button button-outline" href="/analytics">My analytics</a>{% if user.role == 'supplier' %}<a class="button button-outline" href="/integrations/api">API / ERP</a>{% endif %}</div>
+  </div>
+
+  {% if intelligence %}
+  <div class="container filter-tabs analytics-tabs">{% for d in allowed_days %}<a class="{{ 'active' if d == days else '' }}" href="/market-intelligence?days={{ d }}{% if q %}&q={{ q|urlencode }}{% endif %}">{{ d }} days</a>{% endfor %}</div>
+  <section class="container dashboard-grid four">
+    <article class="metric-card"><span>Authenticated searches</span><strong>{{ intelligence.searches }}</strong><small>Network searches in this window.</small></article>
+    <article class="metric-card"><span>RFQ demand</span><strong>{{ intelligence.rfqs }}</strong><small>{{ intelligence.wanted }} wanted requests too.</small></article>
+    <article class="metric-card"><span>Active buyer companies</span><strong>{{ intelligence.buyer_companies }}</strong><small>Distinct companies contributing demand.</small></article>
+    <article class="metric-card"><span>Quote outcomes</span><strong>{{ intelligence.awards }}</strong><small>{{ intelligence.quote_to_award_rate ~ '% of quotes selected' if intelligence.quote_to_award_rate is not none else 'No completed awards yet' }}</small></article>
+  </section>
+
+  <section class="container intelligence-query detail-card">
+    <div><span class="kicker">PART BENCHMARK</span><h2>Demand & pricing intelligence</h2><p>Look up a specific part. Pricing is kept separate by currency and only shown after the privacy thresholds are met.</p></div>
+    <form method="get" action="/market-intelligence" class="inline-intelligence-form"><input type="hidden" name="days" value="{{ days }}"><input name="q" value="{{ q }}" placeholder="e.g. IQ233/UNB/230VAC" required><button class="button button-dark" type="submit">Analyse part</button></form>
+  </section>
+
+  {% if part %}
+  <section class="container intelligence-part-grid">
+    <article class="detail-card"><span class="kicker">DEMAND</span><h2>{{ q }}</h2>
+      {% if part.demand.events >= privacy.demand_events or user.role == 'admin' %}
+      <div class="signal-grid"><div><strong>{{ part.demand.searches }}</strong><span>searches</span></div><div><strong>{{ part.demand.rfqs }}</strong><span>RFQs</span></div><div><strong>{{ part.demand.wanted }}</strong><span>wanted</span></div><div><strong>{{ part.demand.supplier_count }}</strong><span>live suppliers</span></div></div>
+      <p class="muted-copy">{{ part.demand.requested_units }} requested units · {{ part.demand.zero_result_searches }} searches returned no exact live supply.</p>
+      {% else %}<div class="privacy-lock"><strong>Demand benchmark held back</strong><p>We need at least {{ privacy.demand_events }} demand events from {{ privacy.buyer_companies }} independent buyer companies before showing network demand for a part.</p></div>{% endif %}
+    </article>
+    <article class="detail-card"><span class="kicker">PRICE BENCHMARK</span><h2>Supplier quotes</h2>
+      {% if part.pricing.available %}
+        {% for c in part.pricing.currencies %}<div class="price-benchmark"><div><span>{{ c.currency }}</span><strong>{{ '%.2f'|format(c.median) }}</strong><small>median quote</small></div><div><span>Range</span><strong>{{ '%.2f'|format(c.low) }}–{{ '%.2f'|format(c.high) }}</strong><small>{{ c.quote_count }} quotes · {{ c.supplier_count }} suppliers</small></div>{% if c.accepted_median is not none %}<div><span>Selected</span><strong>{{ '%.2f'|format(c.accepted_median) }}</strong><small>{{ c.accepted_count }} accepted quote(s)</small></div>{% endif %}</div>{% endfor %}
+        <p class="technical-warning">Aggregated benchmark only. Controls Exchange never exposes a named competitor's price.</p>
+      {% else %}<div class="privacy-lock"><strong>Price benchmark held back</strong><p>{{ part.pricing.reason }} Minimum: {{ privacy.quote_samples }} quotes from {{ privacy.quote_suppliers }} independent suppliers and {{ privacy.quote_buyer_companies }} independent buyer companies.</p></div>{% endif %}
+    </article>
+  </section>
+  {% endif %}
+
+  <section class="container analytics-two-col intelligence-lists">
+    <article class="dashboard-section"><div class="section-heading"><span class="kicker">OPPORTUNITIES</span><h2>{% if user.role == 'admin' %}Highest network gaps{% else %}Stock you may be missing{% endif %}</h2><p>Demand is weighted toward RFQs and wanted requests, then discounted where plenty of suppliers already have live stock.</p></div><div class="table-wrap"><table><thead><tr><th>Part / search</th><th>Demand</th><th>Supply</th><th>Signal</th></tr></thead><tbody>{% for r in opportunities %}<tr><td><a href="/market-intelligence?days={{ days }}&q={{ r.display_query|urlencode }}"><strong>{{ r.display_query }}</strong></a><small>{{ r.buyer_companies }} buyer companies</small></td><td>{{ r.searches }} searches · {{ r.rfqs }} RFQ · {{ r.wanted }} wanted</td><td>{{ r.supplier_count }} supplier(s) · {{ r.units }} unit(s)</td><td><span class="opportunity-score">{{ r.opportunity_score }}</span><small>{{ r.reason if r.reason is defined else 'Demand / supply score' }}</small></td></tr>{% else %}<tr><td colspan="4" class="empty-cell">No privacy-safe opportunities are available in this window yet. As the network grows, aggregated demand gaps will appear here.</td></tr>{% endfor %}</tbody></table></div></article>
+    <article class="dashboard-section"><div class="section-heading"><span class="kicker">NETWORK DEMAND</span><h2>Top privacy-safe signals</h2></div><div class="table-wrap"><table><thead><tr><th>Part / search</th><th>Demand score</th><th>Buyer companies</th></tr></thead><tbody>{% for r in demand[:15] %}<tr><td><a href="/market-intelligence?days={{ days }}&q={{ r.display_query|urlencode }}"><strong>{{ r.display_query }}</strong></a></td><td>{{ r.demand_score }}</td><td>{{ r.buyer_companies }}</td></tr>{% else %}<tr><td colspan="3" class="empty-cell">Nothing has crossed the aggregation threshold yet.</td></tr>{% endfor %}</tbody></table></div></article>
+  </section>
+
+  <section class="container privacy-policy-card"><span class="kicker">PRIVACY BY DESIGN</span><h2>What suppliers can and cannot see</h2><p>Network demand is only surfaced after at least <strong>{{ privacy.demand_events }} events</strong> from <strong>{{ privacy.buyer_companies }} independent buyer companies</strong>. Price benchmarks require at least <strong>{{ privacy.quote_samples }} quotes</strong> from <strong>{{ privacy.quote_suppliers }} independent suppliers</strong> and <strong>{{ privacy.quote_buyer_companies }} independent buyer companies</strong>. Currency pools are never mixed, and no single company may contribute more than {{ (privacy.max_contributor_share * 100)|int }}% of a published cohort. Buyer names and individual supplier quotes are never included.</p></section>
+  {% else %}
+  <div class="container empty-state"><h2>Network intelligence is available on Pro and above</h2><p>Your existing supplier analytics remain available, but cross-network demand, pricing benchmarks and stock-gap recommendations are reserved for Pro, Premium and Manufacturer plans.</p><a class="button button-primary" href="/billing">View plans</a></div>
+  {% endif %}
+</main>
+{% endblock %}

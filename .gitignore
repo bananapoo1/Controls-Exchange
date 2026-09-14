@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+data/*.db
+data/email_outbox.log
+data/order_documents/
+backups/*.dump
+backups/*.sqlite3
+backups/*.tar.gz
+docker-compose.override.yml
+.DS_Store

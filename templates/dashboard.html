@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Controls Exchange{% endblock %}
+{% block content %}
+<main class="dashboard-page">
+  <div class="container dashboard-head">
+    <div><span class="kicker">{{ user.company_name }}</span><h1>Dashboard</h1><p>{{ user.name }} · {{ user.role|title }} · {{ user.company_role|title }}{% if user.role == 'supplier' %} · <span class="{{ 'verified' if user.company_verified else 'pending' }}">{{ 'Verified supplier' if user.company_verified else 'Company verification pending' }}</span>{% endif %}</p></div>
+    <div class="dashboard-actions">
+      {% if user.role == 'supplier' %}
+        {% if can(user,'manage_inventory') %}<a class="button button-primary" href="/inventory">Manage inventory</a>{% endif %}
+        <a class="button button-outline" href="/rfqs">RFQ inbox</a><a class="button button-outline" href="/analytics">Analytics</a><a class="button button-outline" href="/market-intelligence">Market intelligence</a><a class="button button-outline" href="/billing">Billing</a>
+        {% if user.account_kind == 'manufacturer' %}<a class="button button-outline" href="/manufacturer">Manufacturer tools</a>{% endif %}
+      {% elif user.role == 'admin' %}
+        <a class="button button-primary" href="/admin">Admin console</a><a class="button button-outline" href="/admin/billing">Billing admin</a><a class="button button-outline" href="/audit">Audit log</a>
+      {% else %}
+        <a class="button button-primary" href="/#search">Search inventory</a><a class="button button-outline" href="/rfqs">My RFQs</a><a class="button button-outline" href="/billing">Plan</a>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if user.role == 'supplier' %}
+  <section class="container billing-summary-card {{ 'billing-paused' if not data.subscription.access_active else '' }}">
+    <div><span class="kicker">COMMERCIAL ACCESS</span><h2>{{ data.plan.name }}</h2><p>{% if data.subscription.status == 'trialing' %}{{ data.subscription.days_remaining if data.subscription.days_remaining is defined else billing.days_remaining }} days remain in your {{ 'founding ' if data.subscription.founding_trial else '' }}trial.{% elif data.subscription.access_active %}Your account is {{ data.subscription.status }}.{% else %}Your inventory is currently hidden from marketplace search until a plan is active.{% endif %}</p></div><a class="button button-dark" href="/billing">Manage plan</a>
+  </section>
+  {% endif %}
+
+  <div class="container dashboard-grid">
+    {% if user.role == 'supplier' %}
+      <article class="metric-card"><span>Active stock lines</span><strong>{{ data.inventory_count }}</strong><a href="/inventory">Manage inventory →</a></article>
+      <article class="metric-card"><span>Open RFQs</span><strong>{{ data.open_rfqs }}</strong><a href="/rfqs">Open inbox →</a></article>
+      <article class="metric-card"><span>Fresh inventory</span><strong>{{ data.trust.fresh_stock_pct }}%</strong><small>{{ data.trust.searchable_stock }} lines currently searchable.</small></article>
+      <article class="metric-card"><span>Promoted stock</span><strong>{{ data.usage.promotions }}</strong><a href="/promotions">Manage promotion →</a></article>
+      <article class="metric-card"><span>Team members</span><strong>{{ data.team_count }}</strong><a href="/team">Manage access →</a></article>
+    {% elif user.role == 'admin' %}
+      <article class="metric-card"><span>Pending suppliers</span><strong>{{ data.pending_suppliers }}</strong><a href="/admin">Review companies →</a></article>
+    {% else %}
+      <article class="metric-card"><span>RFQs created</span><strong>{{ data.rfq_count }}</strong><a href="/rfqs">View RFQs →</a></article>
+      <article class="metric-card"><span>Team members</span><strong>{{ data.team_count }}</strong><a href="/team">Manage access →</a></article>
+      <article class="metric-card"><span>Search access</span><strong>Free</strong><a href="/#search">Search parts →</a></article>
+      <article class="metric-card"><span>Saved alerts</span><strong>{{ data.saved_search_count }}</strong><a href="/saved-searches">Manage alerts →</a></article>
+    {% endif %}
+  </div>
+  {% if data.recent %}<section class="container dashboard-section"><div class="section-heading row-heading"><div><span class="kicker">RECENT ACTIVITY</span><h2>RFQs</h2></div><a href="/rfqs" class="text-button">View all</a></div><div class="table-wrap"><table><thead><tr><th>RFQ</th><th>Part</th><th>Qty</th><th>Status</th><th>Created</th></tr></thead><tbody>{% for r in data.recent %}<tr><td><a href="/rfqs/{{ r.id }}">#{{ r.id }}</a></td><td><strong>{{ r.part_number }}</strong></td><td>{{ r.quantity }}</td><td><span class="status-chip">{{ r.recipient_status if r.recipient_status is defined else r.status }}</span></td><td>{{ r.created_at[:10] }}</td></tr>{% endfor %}</tbody></table></div></section>{% endif %}
+</main>
+{% endblock %}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Controls Exchange{% endblock %}</title>
+  <meta name="description" content="{% block description %}Trade search and RFQ network for obsolete, surplus and hard-to-source BMS controls.{% endblock %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/mvp.css">
+</head>
+<body data-authenticated="{{ 'true' if user else 'false' }}" data-role="{{ user.role if user else '' }}">
+  <div class="topbar">Private beta · Founding suppliers get {{ founding_trial_days }} days free after verification</div>
+  <header class="nav-wrap">
+    <nav class="nav container">
+      <a class="brand" href="/"><span class="brand-mark">CX</span><span>Controls Exchange</span></a>
+      <div class="nav-links">
+        <a href="/#search">Search</a><a href="/#how">How it works</a><a href="/suppliers">For suppliers</a>
+        {% if user %}<a href="/catalog">Parts catalogue</a><a href="/source">Source assistant</a><a href="/identify">Photo ID</a><a href="/directory">Directory</a><a href="/wanted">Wanted</a><a href="/orders">Orders</a>{% if user.role == 'supplier' %}<a href="/inventory">Inventory</a><a href="/inventory-feeds">Feeds</a><a href="/analytics">Analytics</a><a href="/market-intelligence">Market Intel</a><a href="/promotions">Promote</a>{% if user.account_kind == 'manufacturer' %}<a href="/manufacturer">Manufacturer</a>{% endif %}{% endif %}{% if user.role != 'admin' %}<a href="/saved-searches">Alerts</a><a href="/integrations/api">API</a>{% if user.company_role in ['owner','admin'] %}<a href="/integrations/webhooks">Webhooks</a>{% endif %}<a href="/billing">Billing</a>{% endif %}<a href="/dashboard">Dashboard</a>{% if user.role != 'admin' %}<a href="/team">Team</a>{% endif %}{% if user.role == 'admin' %}<a href="/admin/billing">Billing admin</a><a href="/market-intelligence">Market Intel</a>{% endif %}{% endif %}
+      </div>
+      {% if user %}
+        <div class="nav-account"><span>{{ user.name }}</span><form method="post" action="/logout"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button button-small button-outline" type="submit">Sign out</button></form></div>
+      {% else %}
+        <a class="button button-small button-outline" href="/login">Sign in</a><a class="button button-small button-dark" href="/register">Create account</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  {% if user and not user.email_verified and user.role != 'admin' %}
+  <div class="verification-banner"><div class="container verification-inner"><span><strong>Verify your work email.</strong> Trading and company-management actions are locked until verification.</span><form method="post" action="/verification/resend"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button type="submit" class="text-button">Resend email</button></form></div></div>
+  {% endif %}
+  {% if user and user.role == 'supplier' and billing %}{% if billing.status == 'trialing' and billing.access_active %}<div class="trial-banner"><div class="container verification-inner"><span><strong>{{ billing.days_remaining }} days left</strong> in your {{ 'founding ' if billing.founding_trial else '' }}trial. Inventory remains live until {{ billing.trial_ends_at[:10] }}.</span><a class="text-button" href="/billing">View plans</a></div></div>{% elif not billing.access_active %}<div class="verification-banner"><div class="container verification-inner"><span><strong>Commercial access paused.</strong> Your inventory is hidden from marketplace search until a plan is active.</span><a class="text-button" href="/billing">Choose a plan</a></div></div>{% endif %}{% endif %}
+  {% if flash %}<div class="flash-wrap"><div class="flash {{ 'flash-error' if flash.kind == 'error' else '' }}">{{ flash.message }}</div></div>{% endif %}
+  {% block content %}{% endblock %}
+
+  <footer>
+    <div class="container footer-grid">
+      <div><a class="brand brand-light" href="/"><span class="brand-mark">CX</span><span>Controls Exchange</span></a><p>Search. Source. Keep legacy systems running.</p></div>
+      <div><strong>Platform</strong><a href="/#search">Search inventory</a><a href="/suppliers">For suppliers</a>{% if user %}<a href="/dashboard">Dashboard</a>{% if user.role == "admin" %}<a href="/admin/catalog">Catalogue admin</a>{% endif %}{% endif %}</div>
+      <div><strong>Company</strong><a href="/suppliers">About</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
+      <div><strong>Private beta</strong><p>Verified supplier inventory only. Buyer and supplier transactions remain directly between the parties.</p></div>
+    </div>
+    <div class="container footer-bottom"><span>© 2026 Controls Exchange. Working brand name.</span><span>UK trade platform · Private beta</span></div>
+  </footer>
+  <script src="/static/mvp.js" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
