@@ -90,11 +90,11 @@ def common_context() -> dict[str, Any]:
     }
 
 
-def context_for(role: str | None = None, *, dashboard: bool = False) -> dict[str, Any]:
+def context_for(role: str | None = None, *, dashboard: bool = False, fixture_name: str | None = None) -> dict[str, Any]:
     ctx = common_context()
-    if not role:
+    if not role and not fixture_name:
         return ctx
-    fixture = read_json(f"{role}.json")
+    fixture = read_json(f"{fixture_name or role}.json")
     ctx["user"] = as_namespace(fixture["user"])
     if fixture.get("billing"):
         ctx["billing"] = as_namespace(fixture["billing"])
@@ -107,6 +107,8 @@ def inline_assets(html: str) -> str:
     css = "\n".join((ROOT / "static" / name).read_text(encoding="utf-8") for name in CSS_FILES)
     js = (ROOT / "static" / "mvp.js").read_text(encoding="utf-8")
 
+    # Avoid any external dependency during visual tests. System fonts are close
+    # enough for layout QA and make snapshots deterministic/offline.
     html = re.sub(r"\s*<link[^>]+fonts\.googleapis\.com[^>]*>", "", html)
     html = re.sub(r"\s*<link[^>]+fonts\.gstatic\.com[^>]*>", "", html)
     html = re.sub(r"\s*<link[^>]+rel=\"preconnect\"[^>]*>", "", html)
@@ -131,6 +133,7 @@ class View:
     dashboard: bool = False
     full_page: bool = True
     action: str | None = None
+    fixture: str | None = None
 
 
 VIEWS = {
@@ -145,6 +148,12 @@ VIEWS = {
         View("register-mobile", "register.html", 390, 844, action="supplier-register"),
         View("buyer-dashboard", "dashboard.html", 1440, 1000, role="buyer", dashboard=True),
         View("supplier-dashboard", "dashboard.html", 1440, 1000, role="supplier", dashboard=True),
+        View("new-buyer-dashboard", "dashboard.html", 1440, 1000, role="buyer", dashboard=True, fixture="new_buyer"),
+        View("new-supplier-dashboard", "dashboard.html", 1440, 1100, role="supplier", dashboard=True, fixture="new_supplier"),
+        View("buyer-rfqs-empty", "rfqs.html", 1440, 850, role="buyer"),
+        View("supplier-rfqs-empty", "rfqs.html", 1440, 850, role="supplier"),
+        View("buyer-wanted-empty", "wanted.html", 1440, 950, role="buyer"),
+        View("buyer-orders-empty", "orders.html", 1440, 850, role="buyer"),
         View("admin-dashboard", "dashboard.html", 1440, 1000, role="admin", dashboard=True),
     )
 }
@@ -153,10 +162,15 @@ VIEWS = {
 def attach_routes(page: Page) -> None:
     search_payload = read_json("search_results.json")
 
-    def search_handler(route) -> None:
-        route.fulfill(status=200, content_type="application/json", body=json.dumps(search_payload))
+    def search_handler(route) -> None:  # Playwright's Route type is optional at runtime
+        route.fulfill(
+            status=200,
+            content_type="application/json",
+            body=json.dumps(search_payload),
+        )
 
     page.route("**/api/search**", search_handler)
+    # Visual fixtures should not make accidental network calls.
     page.route("https://**", lambda route: route.abort())
 
 
@@ -176,7 +190,11 @@ def apply_action(page: Page, action: str | None) -> None:
 
 
 def render_view(browser, view: View, output: Path) -> Path:
-    ctx = context_for(view.role, dashboard=view.dashboard)
+    ctx = context_for(view.role, dashboard=view.dashboard, fixture_name=view.fixture)
+    if view.name.endswith("rfqs-empty") or view.name == "buyer-wanted-empty":
+        ctx["rows"] = []
+    if view.name == "buyer-orders-empty":
+        ctx.update({"rows": [], "order_statuses": ["awaiting_po", "submitted", "acknowledged", "processing", "dispatched", "delivered", "cancelled"], "selected_status": ""})
     if view.name == "register-mobile":
         ctx["account_type"] = "supplier"
     html = render_template(view.template, ctx)
