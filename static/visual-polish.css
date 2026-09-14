@@ -1,0 +1,53 @@
+/* Final visual QA refinements. Loaded after modern.css. */
+::selection{background:#b9f0d7;color:#073c2a}
+
+/* Make the mobile navigation self-contained even if older phase CSS is absent. */
+.mobile-menu-panel{padding:8px;background:#fff}
+.mobile-menu-panel .menu-link{display:block;padding:12px 14px;border-radius:10px;color:#31443e;font-size:14px;font-weight:700;line-height:1.25}
+.mobile-menu-panel .menu-link:hover{background:var(--cx-mint-2);color:var(--cx-green-dark)}
+.mobile-menu-account{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 6px 5px}
+.mobile-menu-account .button{width:100%}
+.mobile-menu-user{padding:11px 10px 5px}
+
+/* Tighter, more balanced launch hero. */
+.launch-hero{padding:76px 0 30px}
+.launch-hero-grid{grid-template-columns:minmax(0,1.03fr) minmax(450px,.97fr);gap:54px}
+.launch-hero-copy h1{max-width:660px;margin:20px 0;font-size:clamp(48px,5.4vw,70px);line-height:.98;letter-spacing:-.06em}
+.launch-hero-copy>p{max-width:630px;color:#bfd0ca;font-size:17px}
+.hero-product-shell{min-height:420px}
+.hero-search-card{width:min(100%,530px)}
+.network-count{font-size:10px;color:#7f918b}
+.quick-searches>span{font-size:10px;color:#899993}
+.quick-search{font-size:10px}
+.hero-network-stats span{font-size:9px;color:#7e8f89}
+.brand-ribbon{margin-top:44px;padding-top:22px;font-size:10px;color:#8ba29a}
+
+/* Remove the accidental empty row in the feature bento and improve legibility. */
+.product-section{padding:90px 0}
+.feature-card{min-height:255px}
+.feature-label{font-size:9px;color:#82938d}
+.feature-card p{font-size:13px}
+.feature-card>a{font-size:12px}
+.feature-card-dark{grid-column:1/-1;min-height:205px;background:radial-gradient(520px 220px at 88% 0%,rgba(76,226,158,.12),transparent 72%),linear-gradient(145deg,#0a2a24,#071d19)}
+.feature-card-dark h3{font-size:27px;max-width:720px;margin-top:28px}
+.feature-card-dark .feature-card-top{max-width:720px}
+.feature-card-dark p{color:#a8beb6;max-width:700px}
+.feature-card-dark>a{color:#8ce8b8}
+.workflow-section{padding:92px 0}
+.workflow-steps p{font-size:13px}
+.supplier-launch-section{padding:10px 0 92px}
+.final-cta{padding-bottom:82px}
+
+/* Avoid serif fallbacks if hosted Manrope fails to load. */
+.metric-card>strong,.hero-network-stats strong,.floating-stock-card strong,.feature-icon,.workflow-steps article>span,.file-icon-modern,.supplier-process-grid article>span{font-family:Manrope,Inter,system-ui,sans-serif}
+
+@media(max-width:640px){
+  .launch-hero{padding-top:42px;padding-bottom:22px}
+  .launch-hero-copy h1{font-size:clamp(40px,13.2vw,56px);line-height:.96}
+  .launch-hero-copy>p{font-size:15px;line-height:1.62}
+  .product-section,.workflow-section{padding:66px 0}
+  .feature-card,.feature-card-dark{min-height:225px}
+  .feature-card-dark{grid-column:auto}
+  .supplier-launch-section{padding-bottom:66px}
+  .final-cta{padding-bottom:62px}
+}

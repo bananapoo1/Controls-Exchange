@@ -1,0 +1,37 @@
+{
+  "user": {
+    "name": "Priya Shah",
+    "company_name": "Legacy Controls UK",
+    "role": "supplier",
+    "company_role": "owner",
+    "account_kind": "supplier",
+    "email_verified": true,
+    "company_verified": true
+  },
+  "billing": {
+    "status": "trialing",
+    "access_active": true,
+    "days_remaining": 71,
+    "founding_trial": true,
+    "trial_ends_at": "2026-11-24T00:00:00"
+  },
+  "dashboard": {
+    "inventory_count": 846,
+    "open_rfqs": 9,
+    "team_count": 4,
+    "trust": {"fresh_stock_pct": 94, "searchable_stock": 812},
+    "usage": {"promotions": 3},
+    "plan": {"name": "Founding Pro"},
+    "subscription": {
+      "status": "trialing",
+      "access_active": true,
+      "days_remaining": 71,
+      "founding_trial": true
+    },
+    "recent": [
+      {"id": 2051, "part_number": "IQ233", "quantity": 2, "recipient_status": "quoted", "created_at": "2026-09-13T11:15:00"},
+      {"id": 2048, "part_number": "TAC Xenta 401", "quantity": 1, "recipient_status": "open", "created_at": "2026-09-12T15:40:00"},
+      {"id": 2044, "part_number": "XFL521B", "quantity": 4, "recipient_status": "accepted", "created_at": "2026-09-10T08:05:00"}
+    ]
+  }
+}

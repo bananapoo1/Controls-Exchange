@@ -1,0 +1,20 @@
+{
+  "user": {
+    "name": "Alex Morgan",
+    "company_name": "Northstar Building Services",
+    "role": "buyer",
+    "company_role": "owner",
+    "account_kind": "buyer",
+    "email_verified": true,
+    "company_verified": true
+  },
+  "dashboard": {
+    "rfq_count": 7,
+    "team_count": 3,
+    "saved_search_count": 5,
+    "recent": [
+      {"id": 1042, "part_number": "IQ233", "quantity": 2, "status": "open", "created_at": "2026-09-12T09:30:00"},
+      {"id": 1038, "part_number": "XFL521B", "quantity": 1, "status": "awarded", "created_at": "2026-09-09T13:10:00"}
+    ]
+  }
+}

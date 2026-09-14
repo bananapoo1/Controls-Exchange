@@ -1,1 +1,55 @@
-{% extends "base.html" %}{% block title %}Founding Suppliers — Controls Exchange{% endblock %}{% block content %}<main><section class="supplier-hero container"><div class="supplier-hero-copy"><span class="eyebrow"><span class="status-dot"></span> Founding supplier programme</span><h1>Make your slow-moving stock <span>searchable.</span></h1><p>Upload the stock export you already use. The platform turns it into searchable inventory and routes relevant buyer RFQs to your company.</p><div class="hero-actions"><a class="button button-primary" href="/register?account_type=supplier">Create supplier account</a><a class="button button-outline" href="#process">See how it works</a></div><p class="microcopy">No listing fee during private beta. No transaction commission.</p></div><div class="supplier-panel card"><span class="badge badge-dark">FOUNDING PARTNER</span><h3>What we need from you</h3><div class="need-row"><span>1</span><div><strong>Your existing stock export</strong><p>CSV or XLSX. No special template required.</p></div></div><div class="need-row"><span>2</span><div><strong>A named trade contact</strong><p>The account that receives relevant RFQs.</p></div></div><div class="need-row"><span>3</span><div><strong>Platform verification</strong><p>Stock remains hidden until the company is approved.</p></div></div><hr><div class="supplier-panel-bottom"><span>Founding supplier setup</span><strong>Self-service + support</strong></div></div></section><section class="proof-strip"><div class="container proof-grid"><div><strong>Keep your customer</strong><span>buyers deal with you directly</span></div><div><strong>Keep your margin</strong><span>no transaction commission</span></div><div><strong>Keep control</strong><span>remove inventory at any time</span></div><div><strong>Less admin</strong><span>import the export you already have</span></div></div></section><section class="section container" id="process"><div class="section-heading centered narrow"><span class="kicker">FROM SPREADSHEET TO SEARCH RESULTS</span><h2>No marketplace listing project required.</h2></div><div class="process-line"><article><span>01</span><h3>Create account</h3><p>Register your company as a supplier.</p></article><article><span>02</span><h3>Upload stock</h3><p>CSV/XLSX columns are mapped automatically.</p></article><article><span>03</span><h3>Get verified</h3><p>An admin approves the company before inventory goes live.</p></article><article><span>04</span><h3>Receive RFQs</h3><p>Respond with price, currency and a trade message.</p></article></div></section><section class="section dark-section"><div class="container form-layout"><div><span class="kicker kicker-light">JOIN THE PRIVATE BETA</span><h2>You can onboard a real supplier now.</h2><p>This is no longer a front-end form demonstration. Supplier registration, file import, verification and RFQ routing are connected in the MVP.</p></div><div class="join-form"><h3>Start with your existing export</h3><p class="muted">Create the supplier account first, then upload CSV/XLSX stock from the dashboard.</p><a class="button button-primary full-width" href="/register?account_type=supplier">Create supplier account</a></div></div></section></main>{% endblock %}
+{% extends "base.html" %}
+{% block title %}For suppliers — Controls Exchange{% endblock %}
+{% block description %}Make obsolete and surplus BMS stock searchable. Founding suppliers get 90 days free after verification, with no transaction commission.{% endblock %}
+{% block content %}
+<main class="supplier-page">
+  <section class="supplier-hero-modern">
+    <div class="container supplier-hero-modern-grid">
+      <div>
+        <span class="launch-eyebrow"><span class="status-dot"></span> Founding supplier programme</span>
+        <h1>Turn slow-moving stock into <span>inbound demand.</span></h1>
+        <p>Upload the stock export you already use. Controls Exchange turns it into searchable inventory and routes relevant buyer RFQs to your team.</p>
+        <div class="launch-hero-actions"><a class="button button-primary button-large" href="/register?account_type=supplier">Join as a founding supplier</a><a class="button button-outline button-large" href="#supplier-process">See how onboarding works</a></div>
+        <div class="hero-trust-points supplier-trust-points"><span><i>✓</i> 90 days free after verification</span><span><i>✓</i> No transaction commission</span><span><i>✓</i> Keep control of your customer relationship</span></div>
+      </div>
+
+      <div class="supplier-outcome-card">
+        <div class="supplier-outcome-head"><span>Example workflow</span><span class="live-pill">Low admin</span></div>
+        <div class="supplier-outcome-step"><span>1</span><div><strong>Send your export</strong><small>CSV or XLSX — no special template required.</small></div></div>
+        <div class="supplier-outcome-line"></div>
+        <div class="supplier-outcome-step"><span>2</span><div><strong>We map the columns</strong><small>Part number, manufacturer, quantity, condition and location.</small></div></div>
+        <div class="supplier-outcome-line"></div>
+        <div class="supplier-outcome-step"><span>3</span><div><strong>Relevant RFQs arrive</strong><small>Your team responds directly to the buyer.</small></div></div>
+        <div class="supplier-outcome-footer"><span>Founding supplier setup</span><strong>Use the data you already have</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="network-proof"><div class="container network-proof-grid">
+    <article><div class="proof-icon">01</div><div><strong>Keep your margin</strong><span>No commission on trades sourced through the network.</span></div></article>
+    <article><div class="proof-icon">02</div><div><strong>Keep control</strong><span>Update, archive or remove your inventory whenever you need to.</span></div></article>
+    <article><div class="proof-icon">03</div><div><strong>Reduce listing work</strong><span>Upload existing spreadsheets or automate feeds later.</span></div></article>
+  </div></section>
+
+  <section class="section supplier-process-section" id="supplier-process"><div class="container">
+    <div class="section-heading launch-section-heading"><div><span class="kicker">FROM EXPORT TO ENQUIRY</span><h2>No marketplace listing project required.</h2></div><p>Start with surplus, obsolete or dead stock. We can expand the catalogue once the network is already producing useful enquiries.</p></div>
+    <div class="supplier-process-grid">
+      <article><span>01</span><h3>Create your company account</h3><p>Register as a supplier and verify the work email for the account.</p></article>
+      <article><span>02</span><h3>Upload existing stock</h3><p>CSV/XLSX columns are detected and can be mapped before import.</p></article>
+      <article><span>03</span><h3>Complete verification</h3><p>Inventory stays private until the company is approved for the trade network.</p></article>
+      <article><span>04</span><h3>Receive relevant RFQs</h3><p>Respond privately with price, availability and commercial details.</p></article>
+    </div>
+  </div></section>
+
+  <section class="section supplier-benefit-section"><div class="container supplier-benefit-grid">
+    <div><span class="kicker">WHY START WITH SURPLUS?</span><h2>Make shelf stock discoverable without changing your sales process.</h2><p>Controls Exchange is a sourcing layer, not a reseller. You remain the supplier, agree the commercial terms and handle fulfilment with the buyer.</p></div>
+    <div class="supplier-benefit-cards">
+      <article><strong>Search visibility</strong><span>Expose stock that is currently only visible inside your own ERP or spreadsheet.</span></article>
+      <article><strong>Demand signals</strong><span>See which parts are being searched, requested and quoted across the network as data builds.</span></article>
+      <article><strong>Automated feeds</strong><span>Move from manual spreadsheets to scheduled feeds, SFTP, API or email imports when you are ready.</span></article>
+    </div>
+  </div></section>
+
+  <section class="final-cta supplier-final-cta"><div class="container final-cta-inner"><div><span class="kicker">FOUNDING OFFER</span><h2>Start with the stock you would most like to move.</h2><p>Founding suppliers receive 90 days of full network access after verification. No card is required for the trial.</p></div><div class="final-cta-actions"><a class="button button-primary button-large" href="/register?account_type=supplier">Create supplier account</a></div></div></section>
+</main>
+{% endblock %}

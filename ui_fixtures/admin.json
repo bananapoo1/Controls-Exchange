@@ -1,0 +1,15 @@
+{
+  "user": {
+    "name": "Controls Exchange Admin",
+    "company_name": "Controls Exchange",
+    "role": "admin",
+    "company_role": "owner",
+    "account_kind": "admin",
+    "email_verified": true,
+    "company_verified": true
+  },
+  "dashboard": {
+    "pending_suppliers": 6,
+    "recent": []
+  }
+}

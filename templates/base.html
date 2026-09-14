@@ -5,57 +5,231 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Controls Exchange{% endblock %}</title>
   <meta name="description" content="{% block description %}Trade search and RFQ network for obsolete, surplus and hard-to-source BMS controls.{% endblock %}">
+  <meta name="theme-color" content="#071d19">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css">
   <link rel="stylesheet" href="/static/mvp.css">
+  <link rel="stylesheet" href="/static/modern.css">
+  <link rel="stylesheet" href="/static/visual-polish.css">
 </head>
 <body data-authenticated="{{ 'true' if user else 'false' }}" data-role="{{ user.role if user else '' }}">
-  <div class="topbar">Private beta · Founding suppliers get {{ founding_trial_days }} days free after verification</div>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <div class="launch-bar">
+    <div class="container launch-bar-inner">
+      <span class="launch-bar-badge">Founding programme</span>
+      <span>Buyers join free · Founding suppliers get {{ founding_trial_days }} days free</span>
+      <a href="/suppliers">See supplier benefits <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+
   <header class="nav-wrap">
-    <nav class="nav container">
-      <a class="brand" href="/"><span class="brand-mark">CX</span><span>Controls Exchange</span></a>
-      <button class="menu-button" id="menuButton" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">☰</button>
-      <div class="nav-links">
-        <a href="/#search">Search</a><a href="/#how">How it works</a><a href="/suppliers">For suppliers</a>
-        {% if user %}<a href="/catalog">Parts catalogue</a><a href="/source">Source assistant</a><a href="/identify">Photo ID</a><a href="/directory">Directory</a><a href="/wanted">Wanted</a><a href="/orders">Orders</a>{% if user.role == 'supplier' %}<a href="/inventory">Inventory</a><a href="/inventory-feeds">Feeds</a><a href="/analytics">Analytics</a><a href="/market-intelligence">Market Intel</a><a href="/promotions">Promote</a>{% if user.account_kind == 'manufacturer' %}<a href="/manufacturer">Manufacturer</a>{% endif %}{% endif %}{% if user.role != 'admin' %}<a href="/saved-searches">Alerts</a><a href="/integrations/api">API</a>{% if user.company_role in ['owner','admin'] %}<a href="/integrations/webhooks">Webhooks</a>{% endif %}<a href="/billing">Billing</a>{% endif %}<a href="/dashboard">Dashboard</a>{% if user.role != 'admin' %}<a href="/team">Team</a>{% endif %}{% if user.role == 'admin' %}<a href="/admin/billing">Billing admin</a><a href="/market-intelligence">Market Intel</a>{% endif %}{% endif %}
+    <nav class="nav container" aria-label="Primary navigation">
+      <a class="brand" href="/" aria-label="Controls Exchange home">
+        <span class="brand-mark" aria-hidden="true"><span>C</span><span>X</span></span>
+        <span class="brand-copy"><strong>Controls</strong><span>Exchange</span></span>
+      </a>
+
+      <div class="nav-links nav-links-primary">
+        <a href="/#search">Search</a>
+        {% if user %}
+          <a href="/catalog">Parts</a>
+          <a href="/wanted">Wanted</a>
+          <a href="/orders">Orders</a>
+          {% if user.role == 'supplier' %}<a href="/inventory">Inventory</a>{% endif %}
+          <a href="/dashboard">Dashboard</a>
+        {% else %}
+          <a href="/#how">How it works</a>
+          <a href="/suppliers">For suppliers</a>
+        {% endif %}
       </div>
+
       {% if user %}
-        <div class="nav-account"><span>{{ user.name }}</span><form method="post" action="/logout"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button button-small button-outline" type="submit">Sign out</button></form></div>
+        <details class="account-menu">
+          <summary>
+            <span class="account-avatar">{{ user.name[:1]|upper }}</span>
+            <span class="account-summary-copy"><strong>{{ user.name }}</strong><small>{{ user.company_name }}</small></span>
+            <span class="account-chevron" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="account-popover">
+            <div class="account-popover-head">
+              <strong>{{ user.name }}</strong>
+              <span>{{ user.company_name }}</span>
+            </div>
+            <div class="account-links">
+              <a href="/dashboard">Dashboard</a>
+              <a href="/catalog">Parts catalogue</a>
+              <a href="/source">Source assistant</a>
+              <a href="/identify">Photo ID</a>
+              <a href="/directory">Supplier directory</a>
+              <a href="/wanted">Wanted parts</a>
+              <a href="/orders">Orders</a>
+              {% if user.role == 'supplier' %}
+                <span class="account-link-label">Supplier tools</span>
+                <a href="/inventory">Inventory</a>
+                <a href="/inventory-feeds">Automated feeds</a>
+                <a href="/analytics">Analytics</a>
+                <a href="/market-intelligence">Market intelligence</a>
+                <a href="/promotions">Promotions</a>
+                {% if user.account_kind == 'manufacturer' %}<a href="/manufacturer">Manufacturer tools</a>{% endif %}
+              {% endif %}
+              {% if user.role != 'admin' %}
+                <span class="account-link-label">Account</span>
+                <a href="/saved-searches">Saved alerts</a>
+                <a href="/integrations/api">API</a>
+                {% if user.company_role in ['owner','admin'] %}<a href="/integrations/webhooks">Webhooks</a>{% endif %}
+                <a href="/team">Team</a>
+                <a href="/billing">Billing</a>
+              {% else %}
+                <span class="account-link-label">Administration</span>
+                <a href="/admin">Admin console</a>
+                <a href="/admin/billing">Billing admin</a>
+                <a href="/market-intelligence">Market intelligence</a>
+              {% endif %}
+            </div>
+            <form method="post" action="/logout" class="account-signout">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <button type="submit">Sign out</button>
+            </form>
+          </div>
+        </details>
       {% else %}
-        <a class="button button-small button-outline" href="/login">Sign in</a><a class="button button-small button-dark" href="/register">Create account</a>
+        <div class="nav-account-actions">
+          <a class="nav-signin" href="/login">Sign in</a>
+          <a class="button button-small button-primary" href="/register">Create free account</a>
+        </div>
       {% endif %}
+
+      <button class="menu-button" id="menuButton" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
     </nav>
+
     <div class="mobile-menu container" id="mobileMenu" hidden>
       <div class="mobile-menu-panel">
-        <a class="menu-link" href="/#search">Search</a><a class="menu-link" href="/#how">How it works</a><a class="menu-link" href="/suppliers">For suppliers</a>
-        {% if user %}<a class="menu-link" href="/catalog">Parts catalogue</a><a class="menu-link" href="/source">Source assistant</a><a class="menu-link" href="/identify">Photo ID</a><a class="menu-link" href="/directory">Directory</a><a class="menu-link" href="/wanted">Wanted</a><a class="menu-link" href="/orders">Orders</a>{% if user.role == 'supplier' %}<a class="menu-link" href="/inventory">Inventory</a><a class="menu-link" href="/inventory-feeds">Feeds</a><a class="menu-link" href="/analytics">Analytics</a><a class="menu-link" href="/market-intelligence">Market Intel</a><a class="menu-link" href="/promotions">Promote</a>{% if user.account_kind == 'manufacturer' %}<a class="menu-link" href="/manufacturer">Manufacturer</a>{% endif %}{% endif %}{% if user.role != 'admin' %}<a class="menu-link" href="/saved-searches">Alerts</a><a class="menu-link" href="/integrations/api">API</a>{% if user.company_role in ['owner','admin'] %}<a class="menu-link" href="/integrations/webhooks">Webhooks</a>{% endif %}<a class="menu-link" href="/billing">Billing</a>{% endif %}<a class="menu-link" href="/dashboard">Dashboard</a>{% if user.role != 'admin' %}<a class="menu-link" href="/team">Team</a>{% endif %}{% if user.role == 'admin' %}<a class="menu-link" href="/admin/billing">Billing admin</a><a class="menu-link" href="/market-intelligence">Market Intel</a>{% endif %}{% endif %}
+        <a class="menu-link" href="/#search">Search inventory</a>
         {% if user %}
-        <div class="mobile-menu-user"><span>{{ user.name }}</span><form method="post" action="/logout"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button button-small button-outline" type="submit">Sign out</button></form></div>
+          <a class="menu-link" href="/dashboard">Dashboard</a>
+          <a class="menu-link" href="/catalog">Parts catalogue</a>
+          <a class="menu-link" href="/source">Source assistant</a>
+          <a class="menu-link" href="/identify">Photo ID</a>
+          <a class="menu-link" href="/directory">Supplier directory</a>
+          <a class="menu-link" href="/wanted">Wanted parts</a>
+          <a class="menu-link" href="/orders">Orders</a>
+          {% if user.role == 'supplier' %}
+            <div class="mobile-menu-label">Supplier tools</div>
+            <a class="menu-link" href="/inventory">Inventory</a>
+            <a class="menu-link" href="/inventory-feeds">Automated feeds</a>
+            <a class="menu-link" href="/analytics">Analytics</a>
+            <a class="menu-link" href="/market-intelligence">Market intelligence</a>
+            <a class="menu-link" href="/promotions">Promotions</a>
+            {% if user.account_kind == 'manufacturer' %}<a class="menu-link" href="/manufacturer">Manufacturer tools</a>{% endif %}
+          {% endif %}
+          {% if user.role != 'admin' %}
+            <div class="mobile-menu-label">Account</div>
+            <a class="menu-link" href="/saved-searches">Saved alerts</a>
+            <a class="menu-link" href="/integrations/api">API</a>
+            {% if user.company_role in ['owner','admin'] %}<a class="menu-link" href="/integrations/webhooks">Webhooks</a>{% endif %}
+            <a class="menu-link" href="/team">Team</a>
+            <a class="menu-link" href="/billing">Billing</a>
+          {% else %}
+            <a class="menu-link" href="/admin">Admin console</a>
+            <a class="menu-link" href="/admin/billing">Billing admin</a>
+          {% endif %}
+          <div class="mobile-menu-user">
+            <span><strong>{{ user.name }}</strong><small>{{ user.company_name }}</small></span>
+            <form method="post" action="/logout">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <button class="button button-small button-outline" type="submit">Sign out</button>
+            </form>
+          </div>
         {% else %}
-        <div class="mobile-menu-account"><a class="button button-small button-outline" href="/login">Sign in</a><a class="button button-small button-dark" href="/register">Create account</a></div>
+          <a class="menu-link" href="/#how">How it works</a>
+          <a class="menu-link" href="/suppliers">For suppliers</a>
+          <div class="mobile-menu-account">
+            <a class="button button-small button-outline" href="/login">Sign in</a>
+            <a class="button button-small button-primary" href="/register">Create free account</a>
+          </div>
         {% endif %}
       </div>
     </div>
   </header>
 
   {% if user and not user.email_verified and user.role != 'admin' %}
-  <div class="verification-banner"><div class="container verification-inner"><span><strong>Verify your work email.</strong> Trading and company-management actions are locked until verification.</span><form method="post" action="/verification/resend"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button type="submit" class="text-button">Resend email</button></form></div></div>
+  <div class="verification-banner">
+    <div class="container verification-inner">
+      <span><strong>Verify your work email.</strong> Trading and company-management actions are locked until verification.</span>
+      <form method="post" action="/verification/resend">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit" class="text-button">Resend email</button>
+      </form>
+    </div>
+  </div>
   {% endif %}
-  {% if user and user.role == 'supplier' and billing %}{% if billing.status == 'trialing' and billing.access_active %}<div class="trial-banner"><div class="container verification-inner"><span><strong>{{ billing.days_remaining }} days left</strong> in your {{ 'founding ' if billing.founding_trial else '' }}trial. Inventory remains live until {{ billing.trial_ends_at[:10] }}.</span><a class="text-button" href="/billing">View plans</a></div></div>{% elif not billing.access_active %}<div class="verification-banner"><div class="container verification-inner"><span><strong>Commercial access paused.</strong> Your inventory is hidden from marketplace search until a plan is active.</span><a class="text-button" href="/billing">Choose a plan</a></div></div>{% endif %}{% endif %}
-  {% if flash %}<div class="flash-wrap"><div class="flash {{ 'flash-error' if flash.kind == 'error' else '' }}">{{ flash.message }}</div></div>{% endif %}
-  {% block content %}{% endblock %}
+
+  {% if user and user.role == 'supplier' and billing %}
+    {% if billing.status == 'trialing' and billing.access_active %}
+      <div class="trial-banner">
+        <div class="container verification-inner">
+          <span><strong>{{ billing.days_remaining }} days left</strong> in your {{ 'founding ' if billing.founding_trial else '' }}trial. Inventory remains live until {{ billing.trial_ends_at[:10] }}.</span>
+          <a class="text-button" href="/billing">View plans</a>
+        </div>
+      </div>
+    {% elif not billing.access_active %}
+      <div class="verification-banner">
+        <div class="container verification-inner">
+          <span><strong>Commercial access paused.</strong> Your inventory is hidden from marketplace search until a plan is active.</span>
+          <a class="text-button" href="/billing">Choose a plan</a>
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {% if flash %}
+    <div class="flash-wrap" role="status" aria-live="polite">
+      <div class="flash {{ 'flash-error' if flash.kind == 'error' else '' }}">{{ flash.message }}</div>
+    </div>
+  {% endif %}
+
+  <div id="main-content">{% block content %}{% endblock %}</div>
 
   <footer>
     <div class="container footer-grid">
-      <div><a class="brand brand-light" href="/"><span class="brand-mark">CX</span><span>Controls Exchange</span></a><p>Search. Source. Keep legacy systems running.</p></div>
-      <div><strong>Platform</strong><a href="/#search">Search inventory</a><a href="/suppliers">For suppliers</a>{% if user %}<a href="/dashboard">Dashboard</a>{% if user.role == "admin" %}<a href="/admin/catalog">Catalogue admin</a>{% endif %}{% endif %}</div>
-      <div><strong>Company</strong><a href="/suppliers">About</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
-      <div><strong>Private beta</strong><p>Verified supplier inventory only. Buyer and supplier transactions remain directly between the parties.</p></div>
+      <div class="footer-brand-column">
+        <a class="brand brand-light" href="/">
+          <span class="brand-mark" aria-hidden="true"><span>C</span><span>X</span></span>
+          <span class="brand-copy"><strong>Controls</strong><span>Exchange</span></span>
+        </a>
+        <p>The trade network for finding, sourcing and keeping legacy building controls in service.</p>
+      </div>
+      <div>
+        <strong>Platform</strong>
+        <a href="/#search">Search inventory</a>
+        <a href="/catalog">Parts catalogue</a>
+        <a href="/wanted">Wanted parts</a>
+        <a href="/suppliers">For suppliers</a>
+      </div>
+      <div>
+        <strong>Tools</strong>
+        <a href="/source">Source assistant</a>
+        <a href="/identify">Photo ID</a>
+        {% if user %}<a href="/dashboard">Dashboard</a>{% endif %}
+      </div>
+      <div>
+        <strong>Company</strong>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <p class="footer-note">Trade platform. Buyers and suppliers contract directly with each other.</p>
+      </div>
     </div>
-    <div class="container footer-bottom"><span>© 2026 Controls Exchange. Working brand name.</span><span>UK trade platform · Private beta</span></div>
+    <div class="container footer-bottom">
+      <span>© 2026 Controls Exchange</span>
+      <span>UK trade platform · Founding launch</span>
+    </div>
   </footer>
+
   <script src="/static/mvp.js" defer></script>
   {% block scripts %}{% endblock %}
 </body>

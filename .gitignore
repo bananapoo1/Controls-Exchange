@@ -10,3 +10,4 @@ backups/*.sqlite3
 backups/*.tar.gz
 docker-compose.override.yml
 .DS_Store
+ui_snapshots/
