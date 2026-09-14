@@ -2,7 +2,7 @@
 {% block title %}Controls Exchange — Hard-to-find BMS parts, one search{% endblock %}
 {% block content %}
 <main>
-  <section class="hero container">
+  <div class="hero-band"><section class="hero container">
     <div class="eyebrow"><span class="status-dot"></span> Built for BMS engineers, integrators and controls specialists</div>
     <h1>Hard-to-find BMS parts.<br><span>One search.</span></h1>
     <p class="hero-copy">Search obsolete, surplus and hard-to-source building controls across verified supplier inventories — then send one RFQ to the suppliers who have what you need.</p>
@@ -11,7 +11,7 @@
       <div class="search-filters"><select id="brandFilter"><option value="">All brands</option><option>Trend</option><option>Honeywell</option><option>Johnson Controls</option><option>Siemens</option><option>Schneider</option><option>ABB / Cylon</option></select><select id="conditionFilter"><option value="">Any condition</option><option>New old stock</option><option>Refurbished</option><option>Used / tested</option></select></div><div class="search-meta"><span>Search by part number, manufacturer or description</span><span>{{ stats.inventory_count }} live lines · {{ stats.supplier_count }} verified supplier{{ '' if stats.supplier_count == 1 else 's' }}</span></div>
     </div>
     <div class="trust-row"><span>Focused on:</span><strong>Trend</strong><strong>Honeywell</strong><strong>Johnson Controls</strong><strong>Siemens</strong><strong>Schneider</strong><strong>ABB / Cylon</strong></div>
-  </section>
+  </section></div>
 
   <section class="section results-section container" id="resultsSection" hidden>
     <div class="section-heading row-heading"><div><span class="kicker">LIVE INVENTORY</span><h2 id="resultsTitle">Search results</h2></div><div class="heading-actions">{% if user and user.role != 'admin' %}<button id="saveSearchButton" class="button button-small button-outline">Save search alert</button>{% endif %}<button id="clearSearch" class="text-button">Clear search</button></div></div>

@@ -23,10 +23,29 @@
   const esc = (s='') => String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const shortDate = s => { try { return new Date(s).toLocaleDateString(undefined,{day:'numeric',month:'short'}); } catch { return ''; } };
 
-  function openModal(id){ const el=document.getElementById(id); if(el){el.hidden=false; document.body.classList.add('modal-open');} }
-  function closeModal(id){ const el=document.getElementById(id); if(el){el.hidden=true; document.body.classList.remove('modal-open');} }
+  function openModal(id){ const el=document.getElementById(id); if(el){el.hidden=false; el.removeAttribute('aria-hidden'); document.body.classList.add('modal-open'); const closer=el.querySelector('.modal-close'); if(closer) closer.focus();} }
+  function closeModal(id){ const el=document.getElementById(id); if(el){el.hidden=true; el.setAttribute('aria-hidden','true'); if(!document.querySelector('.modal-backdrop:not([hidden])')) document.body.classList.remove('modal-open');} }
   document.querySelectorAll('[data-close-modal]').forEach(btn => btn.addEventListener('click', () => closeModal(btn.dataset.closeModal)));
-  document.querySelectorAll('.modal-backdrop').forEach(el => el.addEventListener('click', e => { if(e.target===el) closeModal(el.id); }));
+  document.querySelectorAll('.modal-backdrop').forEach(el => { el.setAttribute('aria-hidden','true'); el.addEventListener('click', e => { if(e.target===el) closeModal(el.id); }); });
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape'){
+      const open=[...document.querySelectorAll('.modal-backdrop')].filter(el => !el.hidden);
+      if(open.length){ open[open.length-1].id && closeModal(open[open.length-1].id); }
+      closeMenu();
+    }
+  });
+
+  const menuButton=document.querySelector('#menuButton');
+  const mobileMenu=document.querySelector('#mobileMenu');
+  function closeMenu(){ if(mobileMenu && !mobileMenu.hidden){ mobileMenu.hidden=true; menuButton?.setAttribute('aria-expanded','false'); menuButton?.setAttribute('aria-label','Open menu'); } }
+  menuButton?.addEventListener('click', () => {
+    const willOpen=mobileMenu.hidden;
+    mobileMenu.hidden=!willOpen;
+    menuButton.setAttribute('aria-expanded',String(willOpen));
+    menuButton.setAttribute('aria-label',willOpen?'Close menu':'Open menu');
+  });
+  mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  window.addEventListener('resize', () => { if(window.innerWidth>900) closeMenu(); });
 
   function renderResult(item){
     const trust=item.supplier_trust || {};

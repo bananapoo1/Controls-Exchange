@@ -16,6 +16,7 @@
   <header class="nav-wrap">
     <nav class="nav container">
       <a class="brand" href="/"><span class="brand-mark">CX</span><span>Controls Exchange</span></a>
+      <button class="menu-button" id="menuButton" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">☰</button>
       <div class="nav-links">
         <a href="/#search">Search</a><a href="/#how">How it works</a><a href="/suppliers">For suppliers</a>
         {% if user %}<a href="/catalog">Parts catalogue</a><a href="/source">Source assistant</a><a href="/identify">Photo ID</a><a href="/directory">Directory</a><a href="/wanted">Wanted</a><a href="/orders">Orders</a>{% if user.role == 'supplier' %}<a href="/inventory">Inventory</a><a href="/inventory-feeds">Feeds</a><a href="/analytics">Analytics</a><a href="/market-intelligence">Market Intel</a><a href="/promotions">Promote</a>{% if user.account_kind == 'manufacturer' %}<a href="/manufacturer">Manufacturer</a>{% endif %}{% endif %}{% if user.role != 'admin' %}<a href="/saved-searches">Alerts</a><a href="/integrations/api">API</a>{% if user.company_role in ['owner','admin'] %}<a href="/integrations/webhooks">Webhooks</a>{% endif %}<a href="/billing">Billing</a>{% endif %}<a href="/dashboard">Dashboard</a>{% if user.role != 'admin' %}<a href="/team">Team</a>{% endif %}{% if user.role == 'admin' %}<a href="/admin/billing">Billing admin</a><a href="/market-intelligence">Market Intel</a>{% endif %}{% endif %}
@@ -26,6 +27,17 @@
         <a class="button button-small button-outline" href="/login">Sign in</a><a class="button button-small button-dark" href="/register">Create account</a>
       {% endif %}
     </nav>
+    <div class="mobile-menu container" id="mobileMenu" hidden>
+      <div class="mobile-menu-panel">
+        <a class="menu-link" href="/#search">Search</a><a class="menu-link" href="/#how">How it works</a><a class="menu-link" href="/suppliers">For suppliers</a>
+        {% if user %}<a class="menu-link" href="/catalog">Parts catalogue</a><a class="menu-link" href="/source">Source assistant</a><a class="menu-link" href="/identify">Photo ID</a><a class="menu-link" href="/directory">Directory</a><a class="menu-link" href="/wanted">Wanted</a><a class="menu-link" href="/orders">Orders</a>{% if user.role == 'supplier' %}<a class="menu-link" href="/inventory">Inventory</a><a class="menu-link" href="/inventory-feeds">Feeds</a><a class="menu-link" href="/analytics">Analytics</a><a class="menu-link" href="/market-intelligence">Market Intel</a><a class="menu-link" href="/promotions">Promote</a>{% if user.account_kind == 'manufacturer' %}<a class="menu-link" href="/manufacturer">Manufacturer</a>{% endif %}{% endif %}{% if user.role != 'admin' %}<a class="menu-link" href="/saved-searches">Alerts</a><a class="menu-link" href="/integrations/api">API</a>{% if user.company_role in ['owner','admin'] %}<a class="menu-link" href="/integrations/webhooks">Webhooks</a>{% endif %}<a class="menu-link" href="/billing">Billing</a>{% endif %}<a class="menu-link" href="/dashboard">Dashboard</a>{% if user.role != 'admin' %}<a class="menu-link" href="/team">Team</a>{% endif %}{% if user.role == 'admin' %}<a class="menu-link" href="/admin/billing">Billing admin</a><a class="menu-link" href="/market-intelligence">Market Intel</a>{% endif %}{% endif %}
+        {% if user %}
+        <div class="mobile-menu-user"><span>{{ user.name }}</span><form method="post" action="/logout"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button button-small button-outline" type="submit">Sign out</button></form></div>
+        {% else %}
+        <div class="mobile-menu-account"><a class="button button-small button-outline" href="/login">Sign in</a><a class="button button-small button-dark" href="/register">Create account</a></div>
+        {% endif %}
+      </div>
+    </div>
   </header>
 
   {% if user and not user.email_verified and user.role != 'admin' %}
