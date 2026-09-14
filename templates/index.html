@@ -1,37 +1,112 @@
 {% extends "base.html" %}
-{% block title %}Controls Exchange — Hard-to-find BMS parts, one search{% endblock %}
+{% block title %}Controls Exchange — Find hard-to-source BMS parts faster{% endblock %}
+{% block description %}Search verified supplier inventory for obsolete, surplus and hard-to-source BMS controls. Compare live stock, send one RFQ and keep legacy systems running.{% endblock %}
 {% block content %}
-<main>
-  <div class="hero-band"><section class="hero container">
-    <div class="eyebrow"><span class="status-dot"></span> Built for BMS engineers, integrators and controls specialists</div>
-    <h1>Hard-to-find BMS parts.<br><span>One search.</span></h1>
-    <p class="hero-copy">Search obsolete, surplus and hard-to-source building controls across verified supplier inventories — then send one RFQ to the suppliers who have what you need.</p>
-    <div class="search-shell" id="search">
-      <div class="search-row"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.3-4.3m2.3-5.2A7.5 7.5 0 1 1 4 11.5a7.5 7.5 0 0 1 15 0Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input id="heroSearch" autocomplete="off" value="{{ prefill_query or '' }}" placeholder="Try: IQ233, XFL521B, TAC Xenta, Metasys…"><button id="heroSearchButton" class="button button-primary">Search inventory</button></div>
-      <div class="search-filters"><select id="brandFilter"><option value="">All brands</option><option>Trend</option><option>Honeywell</option><option>Johnson Controls</option><option>Siemens</option><option>Schneider</option><option>ABB / Cylon</option></select><select id="conditionFilter"><option value="">Any condition</option><option>New old stock</option><option>Refurbished</option><option>Used / tested</option></select></div><div class="search-meta"><span>Search by part number, manufacturer or description</span><span>{{ stats.inventory_count }} live lines · {{ stats.supplier_count }} verified supplier{{ '' if stats.supplier_count == 1 else 's' }}</span></div>
-    </div>
-    <div class="trust-row"><span>Focused on:</span><strong>Trend</strong><strong>Honeywell</strong><strong>Johnson Controls</strong><strong>Siemens</strong><strong>Schneider</strong><strong>ABB / Cylon</strong></div>
-  </section></div>
+<main class="launch-home">
+  <section class="launch-hero">
+    <div class="container launch-hero-grid">
+      <div class="launch-hero-copy">
+        <div class="launch-eyebrow"><span class="status-dot"></span> Trade sourcing network for building controls</div>
+        <h1>Find the part.<br><span>Keep the building running.</span></h1>
+        <p>Search verified supplier inventory for obsolete, surplus and hard-to-source BMS controls. Find stock, compare options and send one RFQ without ringing around.</p>
+        <div class="launch-hero-actions">
+          <a class="button button-primary button-large" href="#search">Search live inventory</a>
+          <a class="button button-ghost button-large" href="/suppliers">List surplus stock</a>
+        </div>
+        <div class="hero-trust-points">
+          <span><i>✓</i> Buyer access is free</span>
+          <span><i>✓</i> Verified suppliers</span>
+          <span><i>✓</i> No transaction commission</span>
+        </div>
+      </div>
 
-  <section class="section results-section container" id="resultsSection" hidden>
-    <div class="section-heading row-heading"><div><span class="kicker">LIVE INVENTORY</span><h2 id="resultsTitle">Search results</h2></div><div class="heading-actions">{% if user and user.role != 'admin' %}<button id="saveSearchButton" class="button button-small button-outline">Save search alert</button>{% endif %}<button id="clearSearch" class="text-button">Clear search</button></div></div>
-    <div class="selection-bar" id="selectionBar" hidden><div><strong id="selectedCount">0</strong> supplier results selected</div><button class="button button-primary" id="openRfqButton">Send one RFQ</button></div>
-    <div id="resultsGrid" class="results-grid"></div>
-    <div id="noResults" class="no-results" hidden><div class="icon-circle">?</div><h3>No verified inventory matched that search</h3><p>Create a wanted-part alert and the platform will notify verified suppliers.</p><button class="button button-dark" id="openWantedButton">Create wanted request</button></div>
+      <div class="hero-product-shell">
+        <div class="hero-product-glow" aria-hidden="true"></div>
+        <div class="hero-search-card" id="search">
+          <div class="hero-search-card-head">
+            <div><span class="live-dot"></span><span>Live network search</span></div>
+            <span class="network-count">{{ stats.inventory_count }} searchable line{{ '' if stats.inventory_count == 1 else 's' }}</span>
+          </div>
+
+          <div class="search-shell search-shell-modern">
+            <div class="search-row">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.3-4.3m2.3-5.2A7.5 7.5 0 1 1 4 11.5a7.5 7.5 0 0 1 15 0Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input id="heroSearch" autocomplete="off" value="{{ prefill_query or '' }}" placeholder="Part number, brand or description…" aria-label="Search inventory">
+              <button id="heroSearchButton" class="button button-primary" type="button">Search</button>
+            </div>
+            <div class="search-filters">
+              <select id="brandFilter" aria-label="Filter by brand"><option value="">All brands</option><option>Trend</option><option>Honeywell</option><option>Johnson Controls</option><option>Siemens</option><option>Schneider</option><option>ABB / Cylon</option></select>
+              <select id="conditionFilter" aria-label="Filter by condition"><option value="">Any condition</option><option>New old stock</option><option>Refurbished</option><option>Used / tested</option></select>
+            </div>
+          </div>
+
+          <div class="quick-searches" aria-label="Example searches">
+            <span>Try</span>
+            <button type="button" class="quick-search" data-query="IQ233">IQ233</button>
+            <button type="button" class="quick-search" data-query="XFL521B">XFL521B</button>
+            <button type="button" class="quick-search" data-query="TAC Xenta">TAC Xenta</button>
+          </div>
+
+          <div class="hero-network-stats">
+            <div><strong>{{ stats.supplier_count }}</strong><span>verified supplier{{ '' if stats.supplier_count == 1 else 's' }}</span></div>
+            <div><strong>{{ stats.inventory_count }}</strong><span>live stock line{{ '' if stats.inventory_count == 1 else 's' }}</span></div>
+            <div><strong>1 RFQ</strong><span>to multiple suppliers</span></div>
+          </div>
+        </div>
+
+        <div class="floating-stock-card floating-stock-one" aria-hidden="true"><span class="stock-brand">TREND</span><strong>IQ233</strong><small>Verified stock · UK</small></div>
+        <div class="floating-stock-card floating-stock-two" aria-hidden="true"><span class="stock-brand">HONEYWELL</span><strong>XFL521B</strong><small>Fresh inventory</small></div>
+      </div>
+    </div>
+
+    <div class="container brand-ribbon">
+      <span>Search across legacy controls from</span>
+      <div><strong>Trend</strong><strong>Honeywell</strong><strong>Johnson Controls</strong><strong>Siemens</strong><strong>Schneider</strong><strong>ABB / Cylon</strong></div>
+    </div>
   </section>
 
-  <section class="proof-strip"><div class="container proof-grid"><div><strong>{{ stats.inventory_count }} searchable lines</strong><span>from verified inventories</span></div><div><strong>One RFQ</strong><span>to multiple suppliers</span></div><div><strong>Trade only</strong><span>with business accounts</span></div><div><strong>No commission</strong><span>deal directly with suppliers</span></div></div></section>
+  <section class="section results-section container" id="resultsSection" hidden aria-live="polite">
+    <div class="section-heading row-heading"><div><span class="kicker">LIVE INVENTORY</span><h2 id="resultsTitle">Search results</h2></div><div class="heading-actions">{% if user and user.role != 'admin' %}<button id="saveSearchButton" class="button button-small button-outline" type="button">Save search alert</button>{% endif %}<button id="clearSearch" class="text-button" type="button">Clear search</button></div></div>
+    <div class="selection-bar" id="selectionBar" hidden><div><strong id="selectedCount">0</strong> supplier results selected</div><button class="button button-primary" id="openRfqButton" type="button">Send one RFQ</button></div>
+    <div id="resultsGrid" class="results-grid"></div>
+    <div id="noResults" class="no-results" hidden><div class="empty-state-icon">?</div><h3>No verified inventory matched that search</h3><p>Create a wanted-part request and let verified suppliers know what you need.</p><button class="button button-dark" id="openWantedButton" type="button">Create wanted request</button></div>
+  </section>
 
-  <section class="section container" id="how"><div class="section-heading centered narrow"><span class="kicker">A BETTER WAY TO SOURCE LEGACY CONTROLS</span><h2>Stop ringing around for one old controller.</h2><p>Identify the exact part, see who has it, and send the same requirement to the relevant suppliers in one step.</p></div><div class="steps-grid"><article class="card step-card"><span class="step">01</span><div class="mini-icon">⌕</div><h3>Search real inventory</h3><p>Smart matching handles punctuation, spacing, segmented codes, prefixes and close part-number variants.</p></article><article class="card step-card"><span class="step">02</span><div class="mini-icon">≡</div><h3>Select suppliers</h3><p>Compare condition, available quantity, location and update recency.</p></article><article class="card step-card"><span class="step">03</span><div class="mini-icon">↗</div><h3>Send one RFQ</h3><p>Each selected supplier receives the requirement and responds through its account.</p></article></div></section>
+  <section class="network-proof"><div class="container network-proof-grid">
+    <article><div class="proof-icon">01</div><div><strong>Verified inventory</strong><span>Supplier stock is hidden until the business is approved.</span></div></article>
+    <article><div class="proof-icon">02</div><div><strong>Direct trade</strong><span>You negotiate and transact with the supplier, not through a middleman.</span></div></article>
+    <article><div class="proof-icon">03</div><div><strong>Built for legacy systems</strong><span>Part matching, technical relationships and alerts are designed for hard-to-source controls.</span></div></article>
+  </div></section>
 
-  <section class="section soft-bg"><div class="container split"><div class="split-copy"><span class="kicker">FOR SUPPLIERS</span><h2>Turn forgotten stock into inbound enquiries.</h2><p>Upload your existing CSV or Excel export. Founding suppliers do not need to create product listings one by one.</p><ul class="check-list"><li><span>✓</span> Real CSV/XLSX inventory imports</li><li><span>✓</span> Inventory hidden until supplier verification</li><li><span>✓</span> RFQ inbox and quote responses</li><li><span>✓</span> Buyers and suppliers deal directly</li></ul><a class="button button-primary" href="/register?account_type=supplier">Create supplier account</a></div><div class="inventory-card"><div class="inventory-top"><div><span class="status-dot"></span><strong>Inventory import</strong></div><span class="badge">Live workflow</span></div><div class="file-row"><div class="file-icon">XLSX</div><div><strong>your-stock-export.xlsx</strong><span>Part numbers, quantity, condition, location</span></div><span class="success">Ready</span></div><div class="mapping"><span>Your column</span><span>Maps to</span><code>Manufacturer</code><strong>Brand</strong><code>Part No.</code><strong>Part number</strong><code>Qty</code><strong>Quantity</strong><code>Condition</code><strong>Condition</strong></div><div class="inventory-foot"><span>Founding supplier setup</span><strong>Import in minutes</strong></div></div></div></section>
+  <section class="section product-section"><div class="container">
+    <div class="section-heading launch-section-heading"><div><span class="kicker">MORE THAN A STOCK LIST</span><h2>Everything you need to source the awkward part.</h2></div><p>Search current stock first. If the exact item is not obvious, use the catalogue, source assistant, photo identification or a wanted alert to keep moving.</p></div>
 
-  <section class="section dark-section"><div class="container split split-dark"><div><span class="kicker kicker-light">PRIVATE BETA</span><h2>A neutral search layer for the controls industry.</h2></div><div class="dark-copy"><p>The MVP is now operational: accounts, supplier verification, real stock imports, live search, multi-supplier RFQs and email-ready notifications are connected.</p><p>During private beta, verified suppliers can upload inventory without listing fees and buyers can search and send RFQs free of charge.</p></div></div></section>
+    <div class="feature-grid">
+      <article class="feature-card feature-card-wide"><div class="feature-card-top"><span class="feature-icon">⌕</span><span class="feature-label">SMART SEARCH</span></div><h3>Part numbers do not need to be perfectly formatted.</h3><p>Search handles spaces, punctuation, segmented codes, aliases and close part-number variants so messy supplier data is still useful.</p><div class="search-demo"><span>IQ3 XCITE / 96</span><span class="search-demo-arrow">→</span><strong>IQ3XCITE96</strong><span class="match-demo">Match</span></div></article>
+      <article class="feature-card"><div class="feature-card-top"><span class="feature-icon">◎</span><span class="feature-label">PHOTO ID</span></div><h3>Start with a photo.</h3><p>Use a label or equipment photo to identify likely part numbers, then search the network.</p><a href="/identify">Open Photo ID <span>→</span></a></article>
+      <article class="feature-card"><div class="feature-card-top"><span class="feature-icon">↗</span><span class="feature-label">ONE RFQ</span></div><h3>Ask several suppliers once.</h3><p>Select matching stock and send the same requirement to the relevant suppliers in one step.</p><a href="#search">Search inventory <span>→</span></a></article>
+      <article class="feature-card"><div class="feature-card-top"><span class="feature-icon">≋</span><span class="feature-label">PARTS INTELLIGENCE</span></div><h3>Understand what replaces what.</h3><p>Canonical part records can connect aliases, supersessions and reviewed technical relationships without relying on guesswork.</p><a href="/catalog">Browse parts <span>→</span></a></article>
+      <article class="feature-card"><div class="feature-card-top"><span class="feature-icon">◌</span><span class="feature-label">ALERTS</span></div><h3>Let stock come to you.</h3><p>Save a search or post a wanted part and get notified when newly confirmed inventory appears.</p>{% if user %}<a href="/saved-searches">Manage alerts <span>→</span></a>{% else %}<a href="/register">Create free account <span>→</span></a>{% endif %}</article>
+      <article class="feature-card feature-card-dark"><div class="feature-card-top"><span class="feature-icon">CX</span><span class="feature-label">TRADE NETWORK</span></div><h3>Keep the relationship you already own.</h3><p>No transaction commission. Buyers and suppliers agree commercial terms directly.</p><a href="/suppliers">For suppliers <span>→</span></a></article>
+    </div>
+  </div></section>
+
+  <section class="section workflow-section" id="how"><div class="container workflow-grid">
+    <div class="workflow-copy"><span class="kicker">A FASTER SOURCING LOOP</span><h2>From “does anyone have one?” to a quote in three steps.</h2><p>The platform is intentionally simple: find viable stock, pick the suppliers you want to approach and send one requirement.</p><a class="button button-outline" href="/register">Create a free buyer account</a></div>
+    <div class="workflow-steps"><article><span>01</span><div><h3>Search the network</h3><p>Find live inventory by part number, manufacturer or description.</p></div></article><article><span>02</span><div><h3>Compare the useful details</h3><p>See condition, quantity, location, freshness and supplier trust signals.</p></div></article><article><span>03</span><div><h3>Send one RFQ</h3><p>Each selected supplier receives the same requirement and replies privately.</p></div></article></div>
+  </div></section>
+
+  <section class="section supplier-launch-section"><div class="container supplier-launch-card">
+    <div class="supplier-launch-copy"><span class="kicker kicker-light">FOUNDING SUPPLIERS</span><h2>Your dead stock could be someone else’s urgent fix.</h2><p>Upload the spreadsheet you already have. We turn surplus and obsolete stock into searchable inventory and route relevant RFQs to your team.</p><ul class="supplier-benefits"><li><span>✓</span>No transaction commission</li><li><span>✓</span>No manual product-listing project</li><li><span>✓</span>{{ founding_trial_days }} days free after verification</li></ul><div class="launch-hero-actions"><a class="button button-white button-large" href="/register?account_type=supplier">Join as a founding supplier</a><a class="button button-dark-ghost button-large" href="/suppliers">How supplier onboarding works</a></div></div>
+    <div class="supplier-file-card"><div class="supplier-file-head"><span>Inventory import</span><span class="live-pill">Ready</span></div><div class="supplier-file-name"><div class="file-icon-modern">XL</div><div><strong>surplus-stock.xlsx</strong><small>Your existing export</small></div></div><div class="supplier-file-map"><div><span>Part No.</span><strong>Part number</strong></div><div><span>Manufacturer</span><strong>Brand</strong></div><div><span>Qty</span><strong>Quantity</strong></div><div><span>Condition</span><strong>Condition</strong></div></div><div class="supplier-file-footer"><span>Automatic column mapping</span><strong>No re-keying</strong></div></div>
+  </div></section>
+
+  <section class="final-cta"><div class="container final-cta-inner"><div><span class="kicker">READY WHEN YOU ARE</span><h2>Start with the part you cannot find.</h2><p>Buyer accounts are free. Search the network, create alerts and send RFQs to verified suppliers.</p></div><div class="final-cta-actions"><a class="button button-primary button-large" href="#search">Search inventory</a>{% if not user %}<a class="button button-outline button-large" href="/register">Create free account</a>{% endif %}</div></div></section>
 </main>
 
-<div class="modal-backdrop" id="rfqModal" hidden><div class="modal"><button class="modal-close" data-close-modal="rfqModal">×</button><span class="kicker">MULTI-SUPPLIER RFQ</span><h2>Request a quote</h2>{% if user and user.role != 'admin' %}<form method="post" action="/rfqs" id="rfqForm"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><div id="rfqInventoryInputs"></div><label>Part requirement<input name="part_number" id="rfqPart" required></label><div class="two-col"><label>Quantity<input name="quantity" type="number" min="1" value="1"></label><label>Required by<input name="required_by" type="date"></label></div><label>Delivery location<input name="delivery_location" placeholder="e.g. London, UK"></label><label>Notes<textarea name="notes" placeholder="Revision, acceptable condition, urgency, serial details…"></textarea></label><button class="button button-primary full-width" type="submit">Send RFQ</button><small>The selected suppliers receive the same request. Commercial terms remain directly between you and each supplier.</small></form>{% else %}<div class="auth-prompt"><p>You need a trade account to send RFQs.</p><a class="button button-primary" href="/login?next=/">Sign in</a><a class="button button-outline" href="/register">Create buyer account</a></div>{% endif %}</div></div>
+<div class="modal-backdrop" id="rfqModal" hidden role="dialog" aria-modal="true" aria-labelledby="rfqModalTitle"><div class="modal"><button class="modal-close" data-close-modal="rfqModal" type="button" aria-label="Close dialog">×</button><span class="kicker">MULTI-SUPPLIER RFQ</span><h2 id="rfqModalTitle">Request a quote</h2>{% if user and user.role != 'admin' %}<form method="post" action="/rfqs" id="rfqForm"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><div id="rfqInventoryInputs"></div><label>Part requirement<input name="part_number" id="rfqPart" required></label><div class="two-col"><label>Quantity<input name="quantity" type="number" min="1" value="1"></label><label>Required by<input name="required_by" type="date"></label></div><label>Delivery location<input name="delivery_location" placeholder="e.g. London, UK"></label><label>Notes<textarea name="notes" placeholder="Revision, acceptable condition, urgency, serial details…"></textarea></label><button class="button button-primary full-width" type="submit">Send RFQ</button><small>The selected suppliers receive the same request. Commercial terms remain directly between you and each supplier.</small></form>{% else %}<div class="auth-prompt"><p>You need a trade account to send RFQs.</p><a class="button button-primary" href="/login?next=/">Sign in</a><a class="button button-outline" href="/register">Create buyer account</a></div>{% endif %}</div></div>
 
-<div class="modal-backdrop" id="saveSearchModal" hidden><div class="modal"><button class="modal-close" data-close-modal="saveSearchModal">×</button><span class="kicker">SAVED SEARCH</span><h2>Alert me when stock appears</h2><p class="muted">We’ll email you when newly confirmed inventory matches this search. Existing results are treated as already seen.</p><form method="post" action="/saved-searches" id="saveSearchForm"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="query" id="savedSearchQuery"><input type="hidden" name="brand" id="savedSearchBrand"><input type="hidden" name="condition" id="savedSearchCondition"><div class="notice-box"><strong id="savedSearchSummary">Current search</strong></div><button class="button button-primary full-width" type="submit">Save email alert</button></form></div></div>
+<div class="modal-backdrop" id="saveSearchModal" hidden role="dialog" aria-modal="true" aria-labelledby="saveSearchModalTitle"><div class="modal"><button class="modal-close" data-close-modal="saveSearchModal" type="button" aria-label="Close dialog">×</button><span class="kicker">SAVED SEARCH</span><h2 id="saveSearchModalTitle">Alert me when stock appears</h2><p class="muted">We’ll email you when newly confirmed inventory matches this search. Existing results are treated as already seen.</p><form method="post" action="/saved-searches" id="saveSearchForm"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="query" id="savedSearchQuery"><input type="hidden" name="brand" id="savedSearchBrand"><input type="hidden" name="condition" id="savedSearchCondition"><div class="notice-box"><strong id="savedSearchSummary">Current search</strong></div><button class="button button-primary full-width" type="submit">Save email alert</button></form></div></div>
 
-<div class="modal-backdrop" id="wantedModal" hidden><div class="modal"><button class="modal-close" data-close-modal="wantedModal">×</button><span class="kicker">WANTED PART</span><h2>Notify verified suppliers</h2>{% if user and user.role != 'admin' %}<form method="post" action="/wanted"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label>Part / requirement<input name="query" id="wantedQuery" required></label><label>Quantity<input name="quantity" type="number" min="1" value="1"></label><label>Notes<textarea name="notes" placeholder="Brand, revision, condition accepted, urgency…"></textarea></label><button class="button button-primary full-width" type="submit">Create wanted request</button></form>{% else %}<div class="auth-prompt"><p>Sign in to notify suppliers about a wanted part.</p><a class="button button-primary" href="/login?next=/">Sign in</a></div>{% endif %}</div></div>
+<div class="modal-backdrop" id="wantedModal" hidden role="dialog" aria-modal="true" aria-labelledby="wantedModalTitle"><div class="modal"><button class="modal-close" data-close-modal="wantedModal" type="button" aria-label="Close dialog">×</button><span class="kicker">WANTED PART</span><h2 id="wantedModalTitle">Notify verified suppliers</h2>{% if user and user.role != 'admin' %}<form method="post" action="/wanted"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label>Part / requirement<input name="query" id="wantedQuery" required></label><label>Quantity<input name="quantity" type="number" min="1" value="1"></label><label>Notes<textarea name="notes" placeholder="Brand, revision, condition accepted, urgency…"></textarea></label><button class="button button-primary full-width" type="submit">Create wanted request</button></form>{% else %}<div class="auth-prompt"><p>Sign in to notify suppliers about a wanted part.</p><a class="button button-primary" href="/login?next=/">Sign in</a></div>{% endif %}</div></div>
 {% endblock %}
