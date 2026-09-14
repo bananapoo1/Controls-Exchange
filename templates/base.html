@@ -170,7 +170,14 @@
   {% endif %}
 
   {% if user and user.role == 'supplier' and billing %}
-    {% if billing.status == 'trialing' and billing.access_active %}
+    {% if billing.status == 'pending_verification' or not user.company_verified %}
+      <div class="trial-banner">
+        <div class="container verification-inner">
+          <span><strong>Company verification pending.</strong> Your trial has not started; you can prepare inventory while we review the business.</span>
+          <a class="text-button" href="/inventory">Prepare inventory</a>
+        </div>
+      </div>
+    {% elif billing.status == 'trialing' and billing.access_active %}
       <div class="trial-banner">
         <div class="container verification-inner">
           <span><strong>{{ billing.days_remaining }} days left</strong> in your {{ 'founding ' if billing.founding_trial else '' }}trial. Inventory remains live until {{ billing.trial_ends_at[:10] }}.</span>
