@@ -1,0 +1,34 @@
+{
+  "user": {
+    "name": "Sam Wright",
+    "company_name": "Legacy Building Controls Ltd",
+    "role": "supplier",
+    "company_role": "owner",
+    "account_kind": "trade",
+    "email_verified": false,
+    "company_verified": false
+  },
+  "billing": {
+    "status": "pending_verification",
+    "access_active": false,
+    "days_remaining": 0,
+    "founding_trial": true,
+    "trial_ends_at": ""
+  },
+  "dashboard": {
+    "inventory_count": 0,
+    "open_rfqs": 0,
+    "team_count": 1,
+    "saved_search_count": 0,
+    "trust": {"fresh_stock_pct": 0, "searchable_stock": 0},
+    "usage": {"promotions": 0},
+    "plan": {"name": "Founding Pro"},
+    "subscription": {
+      "status": "pending_verification",
+      "access_active": false,
+      "days_remaining": 0,
+      "founding_trial": true
+    },
+    "recent": []
+  }
+}
