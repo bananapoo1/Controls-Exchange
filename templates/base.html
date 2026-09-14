@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/static/styles.css">
   <link rel="stylesheet" href="/static/mvp.css">
   <link rel="stylesheet" href="/static/modern.css">
+  <link rel="stylesheet" href="/static/visual-polish.css">
 </head>
 <body data-authenticated="{{ 'true' if user else 'false' }}" data-role="{{ user.role if user else '' }}">
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -19,7 +20,7 @@
   <div class="launch-bar">
     <div class="container launch-bar-inner">
       <span class="launch-bar-badge">Founding programme</span>
-      <span>Verified suppliers get {{ founding_trial_days }} days free</span>
+      <span>Buyers join free · Founding suppliers get {{ founding_trial_days }} days free</span>
       <a href="/suppliers">See supplier benefits <span aria-hidden="true">→</span></a>
     </div>
   </div>
