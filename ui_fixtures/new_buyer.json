@@ -1,0 +1,17 @@
+{
+  "user": {
+    "name": "Jamie Taylor",
+    "company_name": "First Site Controls",
+    "role": "buyer",
+    "company_role": "owner",
+    "account_kind": "trade",
+    "email_verified": false,
+    "company_verified": true
+  },
+  "dashboard": {
+    "rfq_count": 0,
+    "team_count": 1,
+    "saved_search_count": 0,
+    "recent": []
+  }
+}
