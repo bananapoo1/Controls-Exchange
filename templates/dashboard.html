@@ -3,33 +3,75 @@
 {% block content %}
 <main class="dashboard-page">
   <div class="container dashboard-head">
-    <div><span class="kicker">{{ user.company_name }}</span><h1>Dashboard</h1><p>{{ user.name }} · {{ user.role|title }} · {{ user.company_role|title }}{% if user.role == 'supplier' %} · <span class="{{ 'verified' if user.company_verified else 'pending' }}">{{ 'Verified supplier' if user.company_verified else 'Company verification pending' }}</span>{% endif %}</p></div>
+    <div>
+      <span class="kicker">{{ user.company_name }}</span>
+      <h1>Dashboard</h1>
+      <p>{{ user.name }} · {{ user.role|title }} · {{ user.company_role|title }}{% if user.role == 'supplier' %} · <span class="{{ 'verified' if user.company_verified else 'pending' }}">{{ 'Verified supplier' if user.company_verified else 'Company verification pending' }}</span>{% endif %}</p>
+    </div>
     <div class="dashboard-actions">
       {% if user.role == 'supplier' %}
         {% if can(user,'manage_inventory') %}<a class="button button-primary" href="/inventory">Manage inventory</a>{% endif %}
-        <a class="button button-outline" href="/rfqs">RFQ inbox</a><a class="button button-outline" href="/analytics">Analytics</a><a class="button button-outline" href="/market-intelligence">Market intelligence</a><a class="button button-outline" href="/billing">Billing</a>
-        {% if user.account_kind == 'manufacturer' %}<a class="button button-outline" href="/manufacturer">Manufacturer tools</a>{% endif %}
+        <a class="button button-outline" href="/rfqs">RFQ inbox</a>
       {% elif user.role == 'admin' %}
         <a class="button button-primary" href="/admin">Admin console</a><a class="button button-outline" href="/admin/billing">Billing admin</a><a class="button button-outline" href="/audit">Audit log</a>
       {% else %}
-        <a class="button button-primary" href="/#search">Search inventory</a><a class="button button-outline" href="/rfqs">My RFQs</a><a class="button button-outline" href="/billing">Plan</a>
+        <a class="button button-primary" href="/#search">Search inventory</a><a class="button button-outline" href="/rfqs">My RFQs</a>
       {% endif %}
     </div>
   </div>
 
   {% if user.role == 'supplier' %}
-  <section class="container billing-summary-card {{ 'billing-paused' if not data.subscription.access_active else '' }}">
-    <div><span class="kicker">COMMERCIAL ACCESS</span><h2>{{ data.plan.name }}</h2><p>{% if data.subscription.status == 'trialing' %}{{ data.subscription.days_remaining if data.subscription.days_remaining is defined else billing.days_remaining }} days remain in your {{ 'founding ' if data.subscription.founding_trial else '' }}trial.{% elif data.subscription.access_active %}Your account is {{ data.subscription.status }}.{% else %}Your inventory is currently hidden from marketplace search until a plan is active.{% endif %}</p></div><a class="button button-dark" href="/billing">Manage plan</a>
-  </section>
+    {% if not user.email_verified or not user.company_verified or data.inventory_count == 0 %}
+    <section class="container onboarding-card">
+      <div class="onboarding-copy">
+        <span class="kicker">GET LIVE ON THE NETWORK</span>
+        <h2>{{ 'You are almost ready to receive buyer RFQs.' if data.inventory_count else 'Start with the stock file you already have.' }}</h2>
+        <p>You can upload inventory before company approval. It stays private until verification, and your {{ founding_trial_days }}-day founding trial starts only when the company is approved.</p>
+      </div>
+      <div class="onboarding-steps">
+        <div class="onboarding-step {{ 'done' if user.email_verified else 'current' }}"><span>{{ '✓' if user.email_verified else '1' }}</span><div><strong>Verify your work email</strong><small>{{ 'Complete' if user.email_verified else 'Check your inbox to unlock trading actions.' }}</small></div></div>
+        <div class="onboarding-step {{ 'done' if data.inventory_count else ('current' if user.email_verified else '') }}"><span>{{ '✓' if data.inventory_count else '2' }}</span><div><strong>Add inventory</strong><small>{{ data.inventory_count ~ ' active stock line(s) loaded.' if data.inventory_count else 'Upload CSV/XLSX now; no special template required.' }}</small></div></div>
+        <div class="onboarding-step {{ 'done' if user.company_verified else ('current' if data.inventory_count else '') }}"><span>{{ '✓' if user.company_verified else '3' }}</span><div><strong>Company verification</strong><small>{{ 'Approved and visible to buyers.' if user.company_verified else 'Controls Exchange reviews the business before stock goes live.' }}</small></div></div>
+      </div>
+      <div class="onboarding-actions">
+        {% if not user.email_verified %}
+          <form method="post" action="/verification/resend"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button button-primary" type="submit">Resend verification email</button></form>
+        {% elif can(user,'manage_inventory') and data.inventory_count == 0 %}
+          <a class="button button-primary" href="/inventory">Upload stock</a>
+        {% elif not user.company_verified %}
+          <a class="button button-outline" href="/inventory">Review uploaded stock</a>
+        {% endif %}
+      </div>
+    </section>
+    {% endif %}
+
+    <section class="container billing-summary-card {{ 'billing-paused' if not data.subscription.access_active and data.subscription.status != 'pending_verification' else '' }}">
+      {% if not user.company_verified or data.subscription.status == 'pending_verification' %}
+        <div><span class="kicker">FOUNDING ACCESS</span><h2>Trial starts after approval</h2><p>Your stock can be prepared now, but it remains hidden until company verification. No payment is required while you wait.</p></div><a class="button button-dark" href="/inventory">Prepare inventory</a>
+      {% else %}
+        <div><span class="kicker">COMMERCIAL ACCESS</span><h2>{{ data.plan.name }}</h2><p>{% if data.subscription.status == 'trialing' %}{{ data.subscription.days_remaining if data.subscription.days_remaining is defined else billing.days_remaining }} days remain in your {{ 'founding ' if data.subscription.founding_trial else '' }}trial.{% elif data.subscription.access_active %}Your account is {{ data.subscription.status }}.{% else %}Your inventory is currently hidden from marketplace search until a plan is active.{% endif %}</p></div><a class="button button-dark" href="/billing">Manage plan</a>
+      {% endif %}
+    </section>
+  {% elif user.role == 'buyer' and (not user.email_verified or data.rfq_count == 0) %}
+    <section class="container onboarding-card buyer-onboarding">
+      <div class="onboarding-copy"><span class="kicker">START SOURCING</span><h2>{{ 'Search now. Verify before you contact suppliers.' if not user.email_verified else 'Find the first awkward part.' }}</h2><p>Buyer access is free. Search live stock by part number, compare verified suppliers, then send one RFQ to the matches you want.</p></div>
+      <div class="onboarding-actions"><a class="button button-primary" href="/#search">Search live inventory</a><a class="button button-outline" href="/wanted">Post a wanted part</a></div>
+    </section>
   {% endif %}
 
   <div class="container dashboard-grid">
     {% if user.role == 'supplier' %}
-      <article class="metric-card"><span>Active stock lines</span><strong>{{ data.inventory_count }}</strong><a href="/inventory">Manage inventory →</a></article>
-      <article class="metric-card"><span>Open RFQs</span><strong>{{ data.open_rfqs }}</strong><a href="/rfqs">Open inbox →</a></article>
-      <article class="metric-card"><span>Fresh inventory</span><strong>{{ data.trust.fresh_stock_pct }}%</strong><small>{{ data.trust.searchable_stock }} lines currently searchable.</small></article>
-      <article class="metric-card"><span>Promoted stock</span><strong>{{ data.usage.promotions }}</strong><a href="/promotions">Manage promotion →</a></article>
-      <article class="metric-card"><span>Team members</span><strong>{{ data.team_count }}</strong><a href="/team">Manage access →</a></article>
+      {% if not user.company_verified or data.inventory_count == 0 %}
+        <article class="metric-card"><span>Active stock lines</span><strong>{{ data.inventory_count }}</strong><a href="/inventory">{{ 'Upload inventory' if data.inventory_count == 0 else 'Review inventory' }} →</a></article>
+        <article class="metric-card"><span>Search visibility</span><strong>{{ 'Live' if user.company_verified and data.subscription.access_active else 'Pending' }}</strong><small>{{ 'Buyers can find your current stock.' if user.company_verified and data.subscription.access_active else 'Stock stays private until company approval.' }}</small></article>
+        <article class="metric-card"><span>Team members</span><strong>{{ data.team_count }}</strong><a href="/team">Manage access →</a></article>
+      {% else %}
+        <article class="metric-card"><span>Active stock lines</span><strong>{{ data.inventory_count }}</strong><a href="/inventory">Manage inventory →</a></article>
+        <article class="metric-card"><span>Open RFQs</span><strong>{{ data.open_rfqs }}</strong><a href="/rfqs">Open inbox →</a></article>
+        <article class="metric-card"><span>Fresh inventory</span><strong>{{ data.trust.fresh_stock_pct }}%</strong><small>{{ data.trust.searchable_stock }} lines currently searchable.</small></article>
+        <article class="metric-card"><span>Promoted stock</span><strong>{{ data.usage.promotions }}</strong><a href="/promotions">Manage promotion →</a></article>
+        <article class="metric-card"><span>Team members</span><strong>{{ data.team_count }}</strong><a href="/team">Manage access →</a></article>
+      {% endif %}
     {% elif user.role == 'admin' %}
       <article class="metric-card"><span>Pending suppliers</span><strong>{{ data.pending_suppliers }}</strong><a href="/admin">Review companies →</a></article>
     {% else %}
