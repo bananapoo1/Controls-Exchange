@@ -77,6 +77,8 @@ def build_environment() -> Environment:
 def common_context() -> dict[str, Any]:
     anon = read_json("anonymous.json")
     return {
+        "request": as_namespace({"url": {"path": "/"}}),
+        "public_base_url": "https://controls-exchange.test",
         "user": None,
         "billing": None,
         "flash": None,
