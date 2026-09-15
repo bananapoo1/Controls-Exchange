@@ -1,0 +1,65 @@
+services:
+  - type: web
+    name: controls-exchange-staging
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    dockerCommand: sh scripts/render_staging_start.sh
+    healthCheckPath: /health/ready
+    autoDeploy: true
+    envVars:
+      - key: ENVIRONMENT
+        value: staging
+      - key: SECRET_KEY
+        generateValue: true
+      - key: INTEGRATION_ENCRYPTION_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: controls-exchange-staging-db
+          property: connectionString
+      - key: PUBLIC_BASE_URL
+        fromService:
+          type: web
+          name: controls-exchange-staging
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: ALLOWED_HOSTS
+        fromService:
+          type: web
+          name: controls-exchange-staging
+          envVarKey: RENDER_EXTERNAL_HOSTNAME
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: WEB_CONCURRENCY
+        value: "1"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: SEED_ADMIN
+        value: "true"
+      - key: SEED_DEMO_DATA
+        value: "false"
+      - key: SEED_ADMIN_EMAIL
+        sync: false
+      - key: SEED_ADMIN_PASSWORD
+        sync: false
+      - key: EMAIL_PROVIDER
+        value: log
+      - key: FOUNDING_TRIAL_ENABLED
+        value: "true"
+      - key: FOUNDING_TRIAL_DAYS
+        value: "90"
+      - key: AI_SOURCING_ENABLED
+        value: "false"
+      - key: ORDER_DOCUMENT_DIR
+        value: /tmp/controls_exchange/order_documents
+      - key: ALLOW_PRIVATE_WEBHOOK_HOSTS
+        value: "false"
+
+databases:
+  - name: controls-exchange-staging-db
+    plan: free
+    region: frankfurt
+    databaseName: controls_exchange_staging
+    user: controls_exchange
+    postgresMajorVersion: "18"
