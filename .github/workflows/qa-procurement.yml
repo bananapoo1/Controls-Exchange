@@ -38,3 +38,8 @@ jobs:
 
       - name: Run isolated procurement lifecycle
         run: python scripts/qa_procurement_flow.py
+
+      - name: Run supplier quote hardening checks
+        env:
+          DATABASE_PATH: /tmp/controls_exchange_quote_hardening.db
+        run: python scripts/qa_quote_hardening.py
