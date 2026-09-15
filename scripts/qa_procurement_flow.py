@@ -2,10 +2,16 @@ from __future__ import annotations
 
 import os
 import re
+import sys
 from pathlib import Path
 
 # This script is intentionally isolated from staging/production. The workflow points
-# DATABASE_PATH at /tmp before importing the application.
+# DATABASE_PATH at /tmp before importing the application. When Python executes a file
+# under scripts/, add the repository root explicitly so top-level modules are importable.
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 db_path = Path(os.environ["DATABASE_PATH"])
 db_path.unlink(missing_ok=True)
 
