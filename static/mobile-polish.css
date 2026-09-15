@@ -1,0 +1,107 @@
+/* iPhone/mobile-specific polish. Loaded last so small-screen fixes win without changing desktop. */
+@media (max-width: 700px) {
+  html, body { overflow-x: hidden; }
+  body { -webkit-text-size-adjust: 100%; }
+  .container { width: calc(100% - 32px); max-width: none; }
+
+  /* Keep the top chrome compact and readable. */
+  .launch-bar-inner { min-height: 34px; padding: 6px 0; font-size: 11px; line-height: 1.35; text-align: center; }
+  .nav { height: 64px; gap: 12px; }
+  .brand { min-width: 0; }
+  .brand-symbol { width: 34px; height: 34px; flex-basis: 34px; }
+  .brand-wordmark { font-size: 14px; }
+  .menu-button { width: 40px; height: 40px; flex: 0 0 40px; }
+  .mobile-menu { padding-bottom: 10px; }
+  .mobile-menu-panel { max-height: calc(100svh - 112px); border-radius: 15px; }
+
+  /* iOS zooms form controls below 16px. Keep all interactive text at 16px. */
+  input, textarea, select { font-size: 16px; }
+
+  /* Mobile hero: less empty space, larger body text, stronger hierarchy. */
+  .launch-hero { padding: 34px 0 26px; }
+  .launch-hero-grid { grid-template-columns: 1fr; gap: 28px; }
+  .launch-hero-copy { text-align: left; }
+  .launch-eyebrow { max-width: 100%; padding: 6px 9px; font-size: 9px; line-height: 1.25; text-align: left; }
+  .launch-hero-copy h1 {
+    margin: 16px 0 16px;
+    max-width: 100%;
+    text-align: left;
+    font-size: clamp(42px, 12vw, 52px);
+    line-height: .98;
+    letter-spacing: -.055em;
+  }
+  .launch-hero-copy > p {
+    margin: 0;
+    max-width: 100%;
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.58;
+  }
+  .launch-hero-actions { display: grid; grid-template-columns: 1fr; gap: 9px; margin-top: 21px; }
+  .launch-hero-actions .button { width: 100%; min-height: 48px; }
+  .hero-trust-points { justify-content: flex-start; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin-top: 17px; font-size: 11px; line-height: 1.35; }
+
+  /* The search card is the product demo: make it feel like a native mobile panel. */
+  .hero-product-shell { min-height: auto; width: 100%; }
+  .hero-product-glow, .floating-stock-card { display: none; }
+  .hero-search-card { width: 100%; padding: 12px; border-radius: 18px; box-shadow: 0 22px 52px rgba(0,0,0,.23); }
+  .hero-search-card-head { padding: 0 2px 10px; font-size: 10px; }
+  .network-count { display: none; }
+  .search-shell-modern { padding: 6px; border-radius: 14px; }
+  .search-shell-modern .search-row { display: grid; grid-template-columns: 34px minmax(0,1fr); padding: 3px; }
+  .search-shell-modern .search-row svg { width: 18px; margin-left: 8px; align-self: center; }
+  .search-shell-modern .search-row input { min-width: 0; width: 100%; padding: 12px 6px; font-size: 16px; }
+  .search-shell-modern .search-row .button { grid-column: 1 / -1; width: 100%; min-height: 44px; margin-top: 4px; }
+  .search-shell-modern .search-filters { flex-direction: column; gap: 6px; padding-top: 6px; }
+  .search-shell-modern .search-filters select { width: 100%; padding: 11px 10px; font-size: 16px; }
+  .quick-searches { padding: 10px 1px 2px; gap: 6px; }
+  .quick-searches > span { font-size: 10px; }
+  .quick-search { min-height: 32px; padding: 6px 9px; font-size: 11px; }
+  .hero-network-stats { display: none; }
+  .brand-ribbon { display: none; }
+
+  /* Avoid the very compressed 'miniature desktop' look further down the page. */
+  .network-proof article { padding: 19px 0; }
+  .network-proof article strong { font-size: 13px; }
+  .network-proof article p { font-size: 12px; line-height: 1.55; }
+  .product-section, .workflow-section { padding: 62px 0; }
+  .launch-section-heading { gap: 10px; margin-bottom: 25px; }
+  .launch-section-heading h2, .workflow-copy h2 { font-size: 34px; line-height: 1.04; letter-spacing: -.045em; }
+  .launch-section-heading p, .workflow-copy > p { font-size: 15px; line-height: 1.65; }
+  .feature-grid { grid-template-columns: 1fr; gap: 11px; }
+  .feature-card, .feature-card-dark { min-height: 0; padding: 22px 20px; border-radius: 17px; }
+  .feature-card-wide, .feature-card-dark { grid-column: auto; }
+  .feature-card h3, .feature-card-dark h3 { margin-top: 24px; font-size: 22px; line-height: 1.18; }
+  .feature-card p, .feature-card-dark p { font-size: 14px; line-height: 1.62; }
+  .feature-card > a, .feature-card-dark > a { font-size: 13px; }
+  .workflow-grid { gap: 28px; }
+  .workflow-steps article { grid-template-columns: 38px 1fr; gap: 12px; }
+  .workflow-steps p { font-size: 14px; line-height: 1.62; }
+
+  .supplier-launch-section { padding: 4px 0 62px; }
+  .supplier-launch-card { padding: 27px 19px; border-radius: 20px; gap: 24px; }
+  .supplier-launch-card h2 { font-size: 31px; line-height: 1.06; }
+  .supplier-launch-card p { font-size: 14px; line-height: 1.62; }
+  .supplier-file-card { transform: none; }
+
+  .final-cta { padding-bottom: 60px; }
+  .final-cta-inner h2 { font-size: 32px; line-height: 1.05; }
+  .final-cta-inner p { font-size: 14px; line-height: 1.6; }
+  .final-cta-actions { display: grid; width: 100%; }
+  .final-cta-actions .button { width: 100%; min-height: 48px; }
+
+  .footer-grid { gap: 28px 20px; }
+  .footer-grid p, .footer-grid a { font-size: 12px; line-height: 1.55; }
+}
+
+@media (max-width: 430px) {
+  .container { width: calc(100% - 28px); }
+  .launch-bar-inner { font-size: 10px; }
+  .brand-symbol { width: 32px; height: 32px; flex-basis: 32px; }
+  .brand-wordmark { font-size: 13px; }
+  .launch-hero-copy h1 { font-size: clamp(40px, 12.2vw, 49px); }
+  .hero-trust-points { grid-template-columns: 1fr; }
+  .feature-card, .feature-card-dark { padding: 21px 18px; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-brand-column, .footer-grid > div:last-child { grid-column: auto; }
+}
