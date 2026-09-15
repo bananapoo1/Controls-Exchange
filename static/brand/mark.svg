@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Controls Exchange</title>
+  <desc id="desc">Controls Exchange CX mark</desc>
+  <defs>
+    <linearGradient id="cxDark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#064E3B"/>
+      <stop offset="1" stop-color="#0A7A4A"/>
+    </linearGradient>
+    <linearGradient id="cxMint" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#65E89A"/>
+      <stop offset="1" stop-color="#22C55E"/>
+    </linearGradient>
+  </defs>
+  <path d="M63 20A44 44 0 1 0 63 108" fill="none" stroke="url(#cxDark)" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="64" cy="20" r="8.5" fill="#F4F6F7" stroke="#075F3E" stroke-width="5"/>
+  <path d="M72 34 112 74 98 88 58 48Z" fill="url(#cxDark)"/>
+  <path d="M94 25h22L92 51 79 38Z" fill="url(#cxMint)"/>
+  <path d="M47 77 65 59 82 76 59 103H34Z" fill="url(#cxMint)"/>
+  <circle cx="59" cy="88" r="7.5" fill="#F4F6F7" stroke="#0A7A4A" stroke-width="4"/>
+</svg>
