@@ -3,6 +3,11 @@ set -eu
 
 mkdir -p "${ORDER_DOCUMENT_DIR:-/tmp/controls_exchange/order_documents}"
 
+# Render may create the staging service without prompting for sync:false
+# Blueprint variables. Secure/replace the local-development bootstrap admin
+# before the public web process starts.
+python scripts/staging_admin_bootstrap.py
+
 python scripts/feed_worker.py &
 FEED_PID=$!
 python scripts/webhook_worker.py &
