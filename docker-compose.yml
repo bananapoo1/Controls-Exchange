@@ -25,7 +25,7 @@ services:
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://127.0.0.1:8000}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-*}
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
-      DATABASE_URL: postgresql://controlsexchange:${POSTGRES_PASSWORD:-local-dev-password-change-me}@db:5432/controlsexchange
+      DATABASE_URL: ${DATABASE_URL:-postgresql://controlsexchange:${POSTGRES_PASSWORD:-local-dev-password-change-me}@db:5432/controlsexchange}
       EMAIL_PROVIDER: ${EMAIL_PROVIDER:-log}
       EMAIL_FROM: ${EMAIL_FROM:-hello@controlsexchange.example}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
@@ -90,7 +90,7 @@ services:
       SECRET_KEY: ${SECRET_KEY:-local-compose-secret-change-before-production-1234567890}
       INTEGRATION_ENCRYPTION_KEY: ${INTEGRATION_ENCRYPTION_KEY:-local-integration-secret-change-me-1234567890}
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://127.0.0.1:8000}
-      DATABASE_URL: postgresql://controlsexchange:${POSTGRES_PASSWORD:-local-dev-password-change-me}@db:5432/controlsexchange
+      DATABASE_URL: ${DATABASE_URL:-postgresql://controlsexchange:${POSTGRES_PASSWORD:-local-dev-password-change-me}@db:5432/controlsexchange}
       EMAIL_PROVIDER: ${EMAIL_PROVIDER:-log}
       EMAIL_FROM: ${EMAIL_FROM:-hello@controlsexchange.example}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
@@ -123,7 +123,7 @@ services:
       SECRET_KEY: ${SECRET_KEY:-local-compose-secret-change-before-production-1234567890}
       INTEGRATION_ENCRYPTION_KEY: ${INTEGRATION_ENCRYPTION_KEY:-local-integration-secret-change-me-1234567890}
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://127.0.0.1:8000}
-      DATABASE_URL: postgresql://controlsexchange:${POSTGRES_PASSWORD:-local-dev-password-change-me}@db:5432/controlsexchange
+      DATABASE_URL: ${DATABASE_URL:-postgresql://controlsexchange:${POSTGRES_PASSWORD:-local-dev-password-change-me}@db:5432/controlsexchange}
       WEBHOOK_WORKER_INTERVAL_SECONDS: ${WEBHOOK_WORKER_INTERVAL_SECONDS:-20}
       WEBHOOK_MAX_ATTEMPTS: ${WEBHOOK_MAX_ATTEMPTS:-8}
       WEBHOOK_TIMEOUT_SECONDS: ${WEBHOOK_TIMEOUT_SECONDS:-15}
@@ -138,7 +138,7 @@ services:
     restart: unless-stopped
     command: ["python", "scripts/backup.py", "--loop"]
     environment:
-      DATABASE_URL: postgresql://controlsexchange:${POSTGRES_PASSWORD:-local-dev-password-change-me}@db:5432/controlsexchange
+      DATABASE_URL: ${DATABASE_URL:-postgresql://controlsexchange:${POSTGRES_PASSWORD:-local-dev-password-change-me}@db:5432/controlsexchange}
       BACKUP_DIR: /app/backups
       BACKUP_INTERVAL_SECONDS: ${BACKUP_INTERVAL_SECONDS:-21600}
       BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-14}
