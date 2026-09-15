@@ -2,7 +2,7 @@
 
 This guide is for a **temporary live QA environment**, not production.
 
-The repository now contains `render.yaml`, which provisions:
+The repository contains `render.yaml`, which provisions:
 
 - one free Render web service using the existing Dockerfile;
 - one free Render Postgres database;
@@ -15,15 +15,25 @@ That co-location is deliberate for staging because Render does not offer free st
 1. Sign in to Render and choose **New > Blueprint**.
 2. Connect the `bananapoo1/Controls-Exchange` GitHub repository.
 3. Render should detect `render.yaml` automatically.
-4. When prompted, enter:
+4. Approve the Blueprint and wait for both `controls-exchange-staging` and `controls-exchange-staging-db` to become available.
+5. Open **controls-exchange-staging > Environment** and make sure these two variables have explicit values:
    - `SEED_ADMIN_EMAIL` — your real admin email for staging.
-   - `SEED_ADMIN_PASSWORD` — a long, unique staging password. Do not reuse another password.
-5. Approve the Blueprint.
-6. Wait for both `controls-exchange-staging` and `controls-exchange-staging-db` to become available.
-7. Open the generated `https://...onrender.com` URL.
-8. Check `/health/ready` returns a healthy response.
+   - `SEED_ADMIN_PASSWORD` — a long, unique staging password of at least 14 characters. Do not reuse another password.
+
+   Render may prompt for these during Blueprint creation, but some flows do not. If you were not prompted, add them manually in the service Environment page and save/deploy.
+6. Open the generated `https://...onrender.com` URL.
+7. Check `/health/ready` returns a healthy response.
 
 `PUBLIC_BASE_URL`, `ALLOWED_HOSTS`, the database connection string and cryptographic application secrets are wired automatically by the Blueprint.
+
+### Staging admin safety
+
+The staging startup script runs `scripts/staging_admin_bootstrap.py` before the web process starts. If the database still contains the documented local-development admin (`admin@controlsexchange.local`), the script will:
+
+- replace it with `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` when both are configured; or
+- disable and randomise the default admin when those variables are missing.
+
+It will not overwrite an already configured non-default platform admin on later deploys.
 
 ## First live checks
 
