@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   procurement-flow:
@@ -27,6 +27,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Apply quote guard patch in working tree
+        run: python scripts/apply_quote_guards_patch.py
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -43,3 +46,13 @@ jobs:
         env:
           DATABASE_PATH: /tmp/controls_exchange_quote_hardening.db
         run: python scripts/qa_quote_hardening.py
+
+      - name: Commit validated application fix to QA branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.py
+          if ! git diff --cached --quiet; then
+            git commit -m "Harden supplier RFQ quote validation"
+            git push origin HEAD:qa/free-procurement-ci
+          fi
