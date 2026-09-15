@@ -1,0 +1,17 @@
+{
+  "name": "Controls Exchange",
+  "short_name": "ControlsX",
+  "description": "Trade search and RFQ network for obsolete, surplus and hard-to-source BMS controls.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4F6F7",
+  "theme_color": "#0A7A4A",
+  "icons": [
+    {
+      "src": "/static/brand/mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
