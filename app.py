@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import json
 import logging
+import math
 import os
 import secrets
 import time
@@ -1778,7 +1779,7 @@ def rfq_detail(request: Request, rfq_id: int, recipient: Optional[int] = None):
             messages=conn.execute("""SELECT m.*,u.name AS sender_name,c.name AS sender_company,u.company_id AS sender_company_id
                 FROM rfq_messages m JOIN users u ON u.id=m.sender_user_id JOIN companies c ON c.id=u.company_id
                 WHERE m.recipient_id=? ORDER BY m.created_at""",(selected_recipient["id"],)).fetchall()
-        can_respond=user["role"]=="supplier" and my_recipient is not None and not is_buyer_company and can(user,"trade") and user["email_verified"] and rfq["status"]=="open" and my_recipient["status"] not in {"accepted","not_selected"}
+        can_respond=user["role"]=="supplier" and my_recipient is not None and not is_buyer_company and can(user,"trade") and user["email_verified"] and user["company_verified"] and commercial_access(conn,user["company_id"]) and rfq["status"]=="open" and my_recipient["status"] not in {"accepted","not_selected"}
         can_accept=is_buyer_company and can(user,"trade") and user["email_verified"] and rfq["status"]=="open"
         can_message=(is_buyer_company or my_recipient is not None) and user["email_verified"] and (can(user,"trade") or user["company_role"] in {"owner","admin"})
     return render(request,"rfq_detail.html",rfq=rfq,recipients=recipients,my_recipient=my_recipient,can_respond=can_respond,is_owner=is_buyer_company,selected_recipient=selected_recipient,messages=messages,can_accept=can_accept,can_message=can_message)
@@ -1788,15 +1789,23 @@ def rfq_detail(request: Request, rfq_id: int, recipient: Optional[int] = None):
 async def rfq_respond(request: Request, rfq_id: int):
     form=await request.form(); check_csrf(request,str(form.get("csrf_token","")))
     user=require_permission(request,"trade")
-    if user["role"]!="supplier": raise HTTPException(status_code=403)
+    if user["role"]!="supplier" or not user["company_verified"]: raise HTTPException(status_code=403)
+    with db() as access_conn:
+        if not commercial_access(access_conn,user["company_id"]):
+            flash(request,"Supplier access is paused. Choose a plan in Billing before responding to RFQs.","error")
+            return RedirectResponse("/billing",status_code=303)
     status=str(form.get("status","quoted")); status=status if status in {"quoted","declined"} else "quoted"
     message=str(form.get("supplier_message","" )).strip(); currency=str(form.get("quoted_currency","GBP")).upper()[:3]
     price_raw=str(form.get("quoted_price","" )).strip(); price=None
     if status == "quoted" and not price_raw:
         flash(request,"Enter a quote price or choose Unable to supply.","error"); return RedirectResponse(f"/rfqs/{rfq_id}",status_code=303)
     if price_raw:
-        try: price=float(price_raw)
-        except ValueError: flash(request,"Quote price must be a number.","error"); return RedirectResponse(f"/rfqs/{rfq_id}",status_code=303)
+        try:
+            price=float(price_raw)
+            if not math.isfinite(price) or price <= 0: raise ValueError
+        except ValueError:
+            flash(request,"Quote price must be a positive number.","error")
+            return RedirectResponse(f"/rfqs/{rfq_id}",status_code=303)
     with db() as conn:
         rec=conn.execute("SELECT * FROM rfq_recipients WHERE rfq_id=? AND supplier_company_id=?",(rfq_id,user["company_id"])).fetchone()
         rfq=conn.execute("""SELECT r.*,u.email AS buyer_email,u.company_id AS buyer_company_id FROM rfqs r JOIN users u ON u.id=r.buyer_user_id WHERE r.id=?""",(rfq_id,)).fetchone()
