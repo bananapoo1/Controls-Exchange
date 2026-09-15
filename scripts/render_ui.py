@@ -33,7 +33,7 @@ from playwright.sync_api import Page, sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "ui_fixtures"
 DEFAULT_OUTPUT = ROOT / "ui_snapshots"
-CSS_FILES = ("styles.css", "mvp.css", "modern.css", "visual-polish.css")
+CSS_FILES = ("styles.css", "mvp.css", "modern.css", "visual-polish.css", "mobile-polish.css")
 BASE_URL = "http://controls-exchange.test/"
 
 
@@ -114,7 +114,7 @@ def inline_assets(html: str) -> str:
     html = re.sub(r"\s*<link[^>]+fonts\.googleapis\.com[^>]*>", "", html)
     html = re.sub(r"\s*<link[^>]+fonts\.gstatic\.com[^>]*>", "", html)
     html = re.sub(r"\s*<link[^>]+rel=\"preconnect\"[^>]*>", "", html)
-    html = re.sub(r"\s*<link[^>]+href=\"/static/(?:styles|mvp|modern|visual-polish)\.css\"[^>]*>", "", html)
+    html = re.sub(r"\s*<link[^>]+href=\"/static/(?:styles|mvp|modern|visual-polish|mobile-polish)\.css\"[^>]*>", "", html)
     html = html.replace("</head>", f"<base href=\"{BASE_URL}\"><style>{css}</style></head>")
     html = html.replace('<script src="/static/mvp.js" defer></script>', f"<script>{js}</script>")
     return html
