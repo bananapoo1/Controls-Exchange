@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Controls Exchange</title>
+  <desc id="desc">Controls Exchange social sharing card</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F6F7"/><stop offset="1" stop-color="#EAF7F0"/></linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#064E3B"/><stop offset="1" stop-color="#0A7A4A"/></linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#65E89A"/><stop offset="1" stop-color="#22C55E"/></linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="28" fill="#1F2D32"/>
+  <rect y="602" width="1200" height="28" fill="#0A7A4A"/>
+  <g transform="translate(118 155) scale(1.8)">
+    <path d="M63 20A44 44 0 1 0 63 108" fill="none" stroke="url(#mark)" stroke-width="18" stroke-linecap="round"/>
+    <circle cx="64" cy="20" r="8.5" fill="#F4F6F7" stroke="#075F3E" stroke-width="5"/>
+    <path d="M72 34 112 74 98 88 58 48Z" fill="url(#mark)"/>
+    <path d="M94 25h22L92 51 79 38Z" fill="url(#mint)"/>
+    <path d="M47 77 65 59 82 76 59 103H34Z" fill="url(#mint)"/>
+    <circle cx="59" cy="88" r="7.5" fill="#F4F6F7" stroke="#0A7A4A" stroke-width="4"/>
+  </g>
+  <text x="390" y="280" font-family="'Plus Jakarta Sans', Inter, Arial, sans-serif" font-size="64" font-weight="800" letter-spacing="-2.5" fill="#1F2D32">Controls</text>
+  <text x="390" y="350" font-family="'Plus Jakarta Sans', Inter, Arial, sans-serif" font-size="64" font-weight="800" letter-spacing="-2.5" fill="#0A7A4A">Exchange</text>
+  <text x="394" y="407" font-family="'Plus Jakarta Sans', Inter, Arial, sans-serif" font-size="25" font-weight="600" fill="#52636A">Find the part. Keep the building running.</text>
+  <text x="394" y="458" font-family="'Plus Jakarta Sans', Inter, Arial, sans-serif" font-size="18" font-weight="600" fill="#718079">Trade network for obsolete, surplus and hard-to-source BMS controls.</text>
+</svg>

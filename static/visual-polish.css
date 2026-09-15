@@ -1,5 +1,66 @@
 /* Final visual QA refinements. Loaded after modern.css. */
-::selection{background:#b9f0d7;color:#073c2a}
+:root{
+  --cx-ink:#1F2D32;
+  --cx-muted:#5F6F72;
+  --cx-subtle:#82908F;
+  --cx-green:#0A7A4A;
+  --cx-green-strong:#087044;
+  --cx-green-dark:#064E3B;
+  --cx-accent:#4ADE80;
+  --cx-mint:#EAF7F0;
+  --cx-mint-2:#F4FBF7;
+  --cx-navy:#1F2D32;
+  --cx-navy-2:#173A34;
+  --cx-line:#DCE7E2;
+  --cx-line-strong:#C9D9D2;
+  --cx-surface:#FFFFFF;
+  --cx-surface-soft:#F7F9F8;
+  --cx-bg:#F4F6F7;
+}
+::selection{background:#C9F7DA;color:#064E3B}
+body{font-family:"Plus Jakarta Sans",Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--cx-surface);color:var(--cx-ink)}
+a,button,input,select,textarea{font-family:inherit}
+
+/* Approved brand mark + wordmark. */
+.brand{gap:10px;font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif}
+.brand-symbol{width:40px;height:40px;display:block;flex:0 0 40px;overflow:visible}
+.brand-symbol .mark-c{stroke:var(--cx-green)}
+.brand-symbol .mark-x{fill:var(--cx-green)}
+.brand-symbol .mark-accent{fill:var(--cx-accent)}
+.brand-symbol .mark-hole{fill:#F4F6F7;stroke:var(--cx-green)}
+.brand-wordmark{display:flex;align-items:baseline;gap:4px;white-space:nowrap;font-size:15px;letter-spacing:-.035em;line-height:1}
+.brand-wordmark strong{font-weight:800;color:var(--cx-ink)}
+.brand-wordmark>span{font-weight:800;color:var(--cx-green)}
+.brand-wordmark small{display:none}
+.brand-light{align-items:center}
+.brand-light .brand-symbol .mark-c{stroke:#DDF8E9}
+.brand-light .brand-symbol .mark-x{fill:#DDF8E9}
+.brand-light .brand-symbol .mark-accent{fill:var(--cx-accent)}
+.brand-light .brand-symbol .mark-hole{fill:var(--cx-ink);stroke:#DDF8E9}
+.brand-light .brand-wordmark{display:grid;grid-template-columns:auto auto;column-gap:5px;row-gap:6px;line-height:1.05}
+.brand-light .brand-wordmark strong{color:#F4F6F7}
+.brand-light .brand-wordmark>span{color:var(--cx-accent)}
+.brand-light .brand-wordmark small{display:block;grid-column:1/-1;color:#AEC4BC;font-size:8px;font-weight:600;letter-spacing:0;line-height:1.4}
+.footer-brand-column .brand{margin-bottom:12px}
+
+/* Carry the approved palette through shared UI. */
+.launch-bar{background:linear-gradient(90deg,#172A2E 0%,#1F2D32 50%,#173A34 100%)}
+.launch-bar-badge{color:#A8F2C4;background:rgba(74,222,128,.11);border-color:rgba(74,222,128,.22)}
+.launch-bar a:hover{color:#A8F2C4}
+.account-avatar{background:var(--cx-ink)}
+.button-primary{background:linear-gradient(180deg,#0D8A55 0%,#0A7A4A 100%);box-shadow:0 12px 30px rgba(10,122,74,.24),inset 0 1px rgba(255,255,255,.2)}
+.button-primary:hover{background:linear-gradient(180deg,#0B7D4D 0%,#08683F 100%);box-shadow:0 14px 34px rgba(10,122,74,.3)}
+.button-dark{background:linear-gradient(180deg,#2A3A3F,#1F2D32)}
+.button-white{color:var(--cx-green-dark)}
+.text-button{color:var(--cx-green)}
+input:focus,textarea:focus,select:focus{border-color:#2FBF72;box-shadow:0 0 0 4px rgba(74,222,128,.14)}
+:focus-visible{outline-color:rgba(74,222,128,.42)}
+.launch-hero{background:radial-gradient(750px 470px at 12% 16%,rgba(74,222,128,.15),transparent 66%),radial-gradient(650px 420px at 90% 8%,rgba(10,122,74,.2),transparent 66%),linear-gradient(180deg,#1F2D32 0%,#173A34 72%,#103229 100%)}
+.launch-hero-copy h1 span{background:linear-gradient(90deg,#4ADE80 0%,#86EFA9 62%,#C7F6D8 100%);-webkit-background-clip:text;background-clip:text}
+.live-dot{background:#22C55E;box-shadow:0 0 0 4px rgba(34,197,94,.12)}
+.quick-search:hover{border-color:#A9D7BE;background:#F0FAF5;color:var(--cx-green)}
+.feature-card-dark{background:radial-gradient(520px 220px at 88% 0%,rgba(74,222,128,.13),transparent 72%),linear-gradient(145deg,#173A34,#1F2D32)}
+.feature-card-dark>a{color:#8CE8B8}
 
 /* Make the mobile navigation self-contained even if older phase CSS is absent. */
 .mobile-menu-panel{padding:8px;background:#fff}
@@ -13,7 +74,7 @@
 .launch-hero{padding:76px 0 30px}
 .launch-hero-grid{grid-template-columns:minmax(0,1.03fr) minmax(450px,.97fr);gap:54px}
 .launch-hero-copy h1{max-width:660px;margin:20px 0;font-size:clamp(48px,5.4vw,70px);line-height:.98;letter-spacing:-.06em}
-.launch-hero-copy>p{max-width:630px;color:#bfd0ca;font-size:17px}
+.launch-hero-copy>p{max-width:630px;color:#C2D2CD;font-size:17px}
 .hero-product-shell{min-height:420px}
 .hero-search-card{width:min(100%,530px)}
 .network-count{font-size:10px;color:#7f918b}
@@ -28,20 +89,21 @@
 .feature-label{font-size:9px;color:#82938d}
 .feature-card p{font-size:13px}
 .feature-card>a{font-size:12px}
-.feature-card-dark{grid-column:1/-1;min-height:205px;background:radial-gradient(520px 220px at 88% 0%,rgba(76,226,158,.12),transparent 72%),linear-gradient(145deg,#0a2a24,#071d19)}
+.feature-card-dark{grid-column:1/-1;min-height:205px}
 .feature-card-dark h3{font-size:27px;max-width:720px;margin-top:28px}
 .feature-card-dark .feature-card-top{max-width:720px}
-.feature-card-dark p{color:#a8beb6;max-width:700px}
-.feature-card-dark>a{color:#8ce8b8}
+.feature-card-dark p{color:#B2C7C0;max-width:700px}
 .workflow-section{padding:92px 0}
 .workflow-steps p{font-size:13px}
 .supplier-launch-section{padding:10px 0 92px}
 .final-cta{padding-bottom:82px}
 
-/* Avoid serif fallbacks if hosted Manrope fails to load. */
-.metric-card>strong,.hero-network-stats strong,.floating-stock-card strong,.feature-icon,.workflow-steps article>span,.file-icon-modern,.supplier-process-grid article>span{font-family:Manrope,Inter,system-ui,sans-serif}
+/* Consistent brand type even if the hosted font is unavailable. */
+.metric-card>strong,.hero-network-stats strong,.floating-stock-card strong,.feature-icon,.workflow-steps article>span,.file-icon-modern,.supplier-process-grid article>span{font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif}
 
 @media(max-width:640px){
+  .brand-symbol{width:36px;height:36px;flex-basis:36px}
+  .brand-wordmark{font-size:13px;gap:3px}
   .launch-hero{padding-top:42px;padding-bottom:22px}
   .launch-hero-copy h1{font-size:clamp(40px,13.2vw,56px);line-height:.96}
   .launch-hero-copy>p{font-size:15px;line-height:1.62}

@@ -5,10 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Controls Exchange{% endblock %}</title>
   <meta name="description" content="{% block description %}Trade search and RFQ network for obsolete, surplus and hard-to-source BMS controls.{% endblock %}">
-  <meta name="theme-color" content="#071d19">
+  <meta name="theme-color" content="#0A7A4A">
+  <meta name="color-scheme" content="light">
+  {% if environment != 'production' %}<meta name="robots" content="noindex,nofollow">{% endif %}
+  <link rel="canonical" href="{{ public_base_url.rstrip('/') }}{{ request.url.path }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Controls Exchange">
+  <meta property="og:title" content="Controls Exchange — Find the part. Keep the building running.">
+  <meta property="og:description" content="Trade search and RFQ network for obsolete, surplus and hard-to-source BMS controls.">
+  <meta property="og:url" content="{{ public_base_url.rstrip('/') }}{{ request.url.path }}">
+  <meta property="og:image" content="{{ public_base_url.rstrip('/') }}/static/brand/social-card.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Controls Exchange — Find the part. Keep the building running.">
+  <meta name="twitter:description" content="Trade search and RFQ network for obsolete, surplus and hard-to-source BMS controls.">
+  <meta name="twitter:image" content="{{ public_base_url.rstrip('/') }}/static/brand/social-card.svg">
+  <link rel="icon" href="/static/brand/mark.svg" type="image/svg+xml">
+  <link rel="mask-icon" href="/static/brand/mark.svg" color="#0A7A4A">
+  <link rel="manifest" href="/static/brand/site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css">
   <link rel="stylesheet" href="/static/mvp.css">
   <link rel="stylesheet" href="/static/modern.css">
@@ -28,8 +44,15 @@
   <header class="nav-wrap">
     <nav class="nav container" aria-label="Primary navigation">
       <a class="brand" href="/" aria-label="Controls Exchange home">
-        <span class="brand-mark" aria-hidden="true"><span>C</span><span>X</span></span>
-        <span class="brand-copy"><strong>Controls</strong><span>Exchange</span></span>
+        <svg class="brand-symbol" viewBox="0 0 128 128" aria-hidden="true" focusable="false">
+          <path class="mark-c" d="M63 20A44 44 0 1 0 63 108" fill="none" stroke-width="18" stroke-linecap="round"/>
+          <circle class="mark-hole mark-hole-top" cx="64" cy="20" r="8.5" stroke-width="5"/>
+          <path class="mark-x" d="M72 34 112 74 98 88 58 48Z"/>
+          <path class="mark-accent" d="M94 25h22L92 51 79 38Z"/>
+          <path class="mark-accent" d="M47 77 65 59 82 76 59 103H34Z"/>
+          <circle class="mark-hole mark-hole-bottom" cx="59" cy="88" r="7.5" stroke-width="4"/>
+        </svg>
+        <span class="brand-wordmark"><strong>Controls</strong><span>Exchange</span></span>
       </a>
 
       <div class="nav-links nav-links-primary">
@@ -205,9 +228,16 @@
   <footer>
     <div class="container footer-grid">
       <div class="footer-brand-column">
-        <a class="brand brand-light" href="/">
-          <span class="brand-mark" aria-hidden="true"><span>C</span><span>X</span></span>
-          <span class="brand-copy"><strong>Controls</strong><span>Exchange</span></span>
+        <a class="brand brand-light" href="/" aria-label="Controls Exchange home">
+          <svg class="brand-symbol" viewBox="0 0 128 128" aria-hidden="true" focusable="false">
+            <path class="mark-c" d="M63 20A44 44 0 1 0 63 108" fill="none" stroke-width="18" stroke-linecap="round"/>
+            <circle class="mark-hole mark-hole-top" cx="64" cy="20" r="8.5" stroke-width="5"/>
+            <path class="mark-x" d="M72 34 112 74 98 88 58 48Z"/>
+            <path class="mark-accent" d="M94 25h22L92 51 79 38Z"/>
+            <path class="mark-accent" d="M47 77 65 59 82 76 59 103H34Z"/>
+            <circle class="mark-hole mark-hole-bottom" cx="59" cy="88" r="7.5" stroke-width="4"/>
+          </svg>
+          <span class="brand-wordmark"><strong>Controls</strong><span>Exchange</span><small>Find the part. Keep the building running.</small></span>
         </a>
         <p>The trade network for finding, sourcing and keeping legacy building controls in service.</p>
       </div>
