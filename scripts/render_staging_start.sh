@@ -1,0 +1,25 @@
+#!/bin/sh
+set -eu
+
+mkdir -p "${ORDER_DOCUMENT_DIR:-/tmp/controls_exchange/order_documents}"
+
+python scripts/feed_worker.py &
+FEED_PID=$!
+python scripts/webhook_worker.py &
+WEBHOOK_PID=$!
+WEB_PID=""
+
+cleanup() {
+  [ -z "${WEB_PID:-}" ] || kill "$WEB_PID" 2>/dev/null || true
+  kill "$FEED_PID" "$WEBHOOK_PID" 2>/dev/null || true
+}
+trap cleanup INT TERM EXIT
+
+uvicorn app:app \
+  --host 0.0.0.0 \
+  --port "${PORT:-10000}" \
+  --workers 1 \
+  --proxy-headers \
+  --forwarded-allow-ips='*' &
+WEB_PID=$!
+wait "$WEB_PID"
