@@ -1,0 +1,40 @@
+name: QA procurement lifecycle
+
+on:
+  push:
+    branches:
+      - qa/free-procurement-ci
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  procurement-flow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ENVIRONMENT: test
+      DATABASE_PATH: /tmp/controls_exchange_procurement_qa.db
+      ORDER_DOCUMENT_DIR: /tmp/controls_exchange_order_docs
+      SECRET_KEY: qa-ci-only-secret-key-not-used-outside-actions
+      COOKIE_SECURE: "false"
+      SEED_DEMO_DATA: "false"
+      EMAIL_PROVIDER: log
+      FOUNDING_TRIAL_ENABLED: "true"
+      FOUNDING_TRIAL_DAYS: "90"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install runtime dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run isolated procurement lifecycle
+        run: python scripts/qa_procurement_flow.py
